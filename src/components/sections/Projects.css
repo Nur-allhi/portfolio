@@ -1,0 +1,17 @@
+.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.project-card {
+  display: flex; flex-direction: column; gap: 14px; text-decoration: none; color: inherit;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--rad); padding: 26px;
+  transition: transform .25s var(--ease), box-shadow .25s, border-color .25s;
+}
+.project-card:hover { transform: translateY(-6px); border-color: rgba(79,209,197,.38); box-shadow: 0 26px 54px -22px rgba(0,0,0,.6); }
+.project-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.pnum { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .12em; }
+.pstatus { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--amber); }
+.project-card h3 { font-size: 22px; }
+.pdesc { color: var(--muted); font-size: 14.5px; flex: 1; }
+.p-links { display: flex; gap: 18px; margin-top: 2px; }
+.p-links a { font-family: var(--font-mono); font-size: 13px; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.p-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.arrow { transition: transform .2s var(--ease); }
+a:hover .arrow { transform: translate(2px, -2px); }

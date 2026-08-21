@@ -1,0 +1,34 @@
+.hero {
+  min-height: 100svh; display: grid; place-items: center; position: relative;
+  padding: calc(var(--nav-h) + 48px) 0 84px;
+}
+.hero::before {
+  content: ''; position: absolute; top: 16%; left: 50%; transform: translateX(-50%);
+  width: min(780px, 92vw); height: min(580px, 72vh);
+  background: radial-gradient(closest-side, rgba(79,209,197,.09), transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { max-width: var(--wrap); margin-inline: auto; padding-inline: clamp(20px, 5vw, 40px); text-align: center; position: relative; z-index: 1; }
+.hero-kicker {
+  font-family: var(--font-mono); font-size: 13px; letter-spacing: .08em;
+  color: var(--muted); display: inline-flex; align-items: center; gap: 10px;
+}
+.hero-kicker .k-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px rgba(52,211,153,.8); animation: badge-ping 2.2s ease-out infinite; }
+.hero h1 { font-size: clamp(44px, 9.5vw, 96px); font-weight: 700; letter-spacing: -.03em; line-height: 1.02; margin-top: 22px; }
+.hero .accent-word { color: var(--accent); }
+.hero-lead { max-width: 54ch; margin: 22px auto 0; color: var(--muted); font-size: 17px; }
+.hero-cta { display: flex; gap: 14px; justify-content: center; margin-top: 34px; flex-wrap: wrap; }
+.scroll-cue {
+  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted);
+}
+.scroll-cue .cue-line { width: 1px; height: 44px; background: linear-gradient(180deg, var(--accent), transparent); animation: cue 2.4s ease-in-out infinite; }
+@keyframes cue { 0%{transform:scaleY(0);transform-origin:top} 45%{transform:scaleY(1);transform-origin:top} 55%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+.socials { display: flex; gap: 12px; justify-content: center; margin-top: 30px; }
+.soc {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid var(--border); border-radius: 10px; color: var(--muted);
+  transition: color .2s, border-color .2s, transform .2s var(--ease);
+}
+.soc:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }

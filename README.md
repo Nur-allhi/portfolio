@@ -7,9 +7,9 @@ Junior Web Developer + Networking Student. Personal portfolio to showcase projec
 
 ## Tech Stack
 
-- React 18 + TypeScript + Vite
-- Tailwind CSS
-- React Router (SPA: `/` Portfolio, `/blog` placeholder)
+- React 19 + TypeScript + Vite 8
+- Tailwind CSS 4 + @tailwindcss/vite
+- React Router 6 (SPA: `/` Portfolio, `/blog` placeholder)
 
 ## Getting Started
 

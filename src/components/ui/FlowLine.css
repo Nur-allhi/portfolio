@@ -1,0 +1,23 @@
+.site-main { position: relative; }
+.flow-track { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: min(var(--wrap), 100%); pointer-events: none; }
+.flow-rail {
+  position: absolute; left: 6px; top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, rgba(79,209,197,0) 0%, rgba(79,209,197,.22) 45%, rgba(79,209,197,0) 100%);
+  background-size: 100% 220px; background-repeat: repeat-y;
+  animation: flow-sweep 5s linear infinite; opacity: .55;
+}
+@keyframes flow-sweep { 0%{background-position:0 -220px} 100%{background-position:0 0} }
+.flow-node {
+  position: absolute; left: 6px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent); transform: translate(-50%,-50%);
+  box-shadow: 0 0 10px rgba(79,209,197,.85); opacity: .85;
+  transition: transform .3s var(--ease), box-shadow .3s, opacity .3s;
+}
+.flow-node::after {
+  content: ''; position: absolute; inset: -5px; border-radius: 50%;
+  border: 1px solid rgba(79,209,197,.55); animation: node-pulse 2.6s ease-out infinite;
+}
+.flow-node.active { transform: translate(-50%,-50%) scale(1.4); box-shadow: 0 0 18px rgba(79,209,197,1); opacity: 1; }
+.flow-node.active::after { animation-duration: 1.6s; }
+@keyframes node-pulse { 0%{transform:scale(.5);opacity:.9} 100%{transform:scale(2.1);opacity:0} }
+@media (max-width: 820px) { .flow-rail { opacity: .35; } .flow-node { opacity: .6; } }

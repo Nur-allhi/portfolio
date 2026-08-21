@@ -1,0 +1,11 @@
+.contact { text-align: center; }
+.contact .wrap { max-width: 680px; }
+.contact h2 { font-size: clamp(32px, 5vw, 52px); margin-top: 14px; }
+.contact .sec-lead { margin-inline: auto; }
+.email-big {
+  display: inline-block; font-family: var(--font-mono); font-size: clamp(17px, 3vw, 21px);
+  color: var(--accent); text-decoration: none; margin-top: 26px; padding-bottom: 5px;
+  border-bottom: 1px dashed rgba(79,209,197,.45); transition: color .2s, border-color .2s;
+}
+.email-big:hover { color: var(--accent-bright); border-color: var(--accent); }
+.contact-note { font-family: var(--font-mono); font-size: 13px; color: var(--muted); margin-top: 30px; letter-spacing: .03em; }

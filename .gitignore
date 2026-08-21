@@ -25,6 +25,11 @@ out/
 # OS
 .DS_Store
 Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Logs
 npm-debug.log*
