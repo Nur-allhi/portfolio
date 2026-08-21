@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import "./Blog.css";
@@ -22,14 +23,16 @@ export function Blog() {
           <h1 style={{ marginTop: 16 }}>Blog</h1>
           <div style={{ display: "grid", gap: 16, marginTop: 24 }}>
             {posts.map(p => (
-              <article key={p.id} className="panel" style={{ padding: 20 }}>
-                <h3>{p.title}</h3>
-                <p style={{ color: "var(--muted)", fontSize: 14, marginTop: 6 }}>{p.excerpt}</p>
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--muted)" }}>{p.date} · /{p.slug}</span>
-              </article>
+              <Link key={p.id} to={`/blog/${p.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+                <article className="panel" style={{ padding: 20, transition: "border-color .2s" }}>
+                  <h3>{p.title}</h3>
+                  <p style={{ color: "var(--muted)", fontSize: 14, marginTop: 6 }}>{p.excerpt || "—"}</p>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--muted)" }}>{p.date} · /{p.slug}</span>
+                </article>
+              </Link>
             ))}
           </div>
-          <div className="blog-cta" style={{ textAlign: "center" }}><a className="btn btn-ghost" href="/">Back to portfolio <span>←</span></a></div>
+          <div className="blog-cta" style={{ textAlign: "center" }}><Link className="btn btn-ghost" to="/">Back to portfolio <span>←</span></Link></div>
         </div>
       </main>
     );
@@ -52,7 +55,7 @@ export function Blog() {
           </div>
         </div>
         <div className="blog-cta">
-          <a className="btn btn-ghost" href="/">Back to portfolio <span>←</span></a>
+          <Link className="btn btn-ghost" to="/">Back to portfolio <span>←</span></Link>
         </div>
       </div>
     </main>

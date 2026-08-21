@@ -3,6 +3,7 @@ import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
 import { Portfolio } from "./pages/Portfolio";
 import { Blog } from "./pages/Blog";
+import { BlogPost } from "./pages/BlogPost";
 import { Login } from "./pages/admin/Login";
 import { Dashboard } from "./pages/admin/Dashboard";
 import { AdminProjects } from "./pages/admin/Projects";
@@ -30,6 +31,7 @@ export default function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Portfolio />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
         </Route>
         <Route path="/admin/login" element={<Login />} />
         <Route element={<AdminGuard />}>
