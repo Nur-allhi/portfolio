@@ -18,11 +18,12 @@ Installed via `npx claude-code-templates` and `npm install -g gitnexus` + `gitne
 
 ```
 dev_porfolio/
-├── DESIGNS/index.html, blog.html   # exact design references
-├── Project_Plan/PORTFOLIO-PLAN.md  # build plan
-├── Project_Plan/DESIGN-PROMPT.md   # design generation prompt
+├── DESIGNS/index.html, blog.html, admin/*.html + admin.css/js  # exact design refs
+├── Project_Plan/PORTFOLIO-PLAN.md, DESIGN-PROMPT.md, ADMIN-DESIGN-PROMPT.md
 ├── docs/PRD.md, TAD.md, SECURITY.md, FRONTEND_SPEC.md, TICKETS.md, REPO_RULES.md
-├── src/            # (to be scaffolded) Vite + React + TS
+├── src/pages/admin/ Login, Dashboard, Projects, Education, Blog (guarded)
+├── src/components/admin/ AdminLayout, AdminGuard + hooks/useAdminAuth.ts
+├── src/            # Vite + React + TS
 ├── .gitignore
 ├── README.md
 ├── CHANGELOG.md

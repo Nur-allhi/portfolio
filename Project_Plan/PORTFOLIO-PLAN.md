@@ -8,7 +8,8 @@
 | **Goal** | Land a job/internship — junior web dev + networking student |
 | **Tech Stack** | React + TypeScript + Vite + Tailwind CSS |
 | **Language** | English |
-| **Design Source** | `DESIGNS/index.html` + `DESIGNS/blog.html` |
+| **Design Source** | `DESIGNS/index.html` + `DESIGNS/blog.html` + `DESIGNS/admin/*.html` |
+| **Admin Access** | URL only (`/admin`), no public link, simple auth |
 | **Contact Email** | nureallhi1@gmail.com |
 
 ---
@@ -38,6 +39,10 @@
 | `--amber-soft` | `rgba(232,163,61,.12)` | Amber background |
 | `--success` | `#34D399` | Completed badges |
 | `--success-soft` | `rgba(52,211,153,.12)` | Success background |
+| `--danger` | `#EF4444` | Delete actions |
+| `--danger-soft` | `rgba(239,68,68,.10)` | Danger background |
+| `--sidebar-w` | `240px` | Admin sidebar width |
+| `--rad-sm` | `10px` | Small radius (admin) |
 
 ### Typography
 | Element | Font | Details |
@@ -171,6 +176,17 @@
 - Intersection Observer, threshold 0.12
 - Staggered delays: 0s, 0.06s, 0.12s, 0.18s, 0.24s, 0.3s
 
+### Admin Panel (`DESIGNS/admin/`)
+- **Routes (hidden, no public link):** `/admin/login` → `/admin` (dashboard) → `/admin/projects` → `/admin/education` → `/admin/blog`
+- **Auth:** `admin-auth.js` — `localStorage.admin_auth === '1'`, `admin@nureallhi.dev / admin123`, `guard()` redirects to login, `logout()` clears
+- **Layout (`admin.css`):** fixed sidebar 240px (`--sidebar-w`), teal left border on active nav, topbar sticky 64px with blur, sidebar collapses <820px → drawer + overlay, admin-wrap flex
+- **Dashboard (`admin/index.html`):** stat grid 4 cols (Projects 3, Education 3, Courses 2, Blog 0), recent activity list, quick actions (Add Project/Blog, Manage Education, View Public Site)
+- **Login (`admin/login.html`):** centered card 400px, lock icon, email + password, error handling, "Hidden access — no public link"
+- **Projects (`admin/projects.html`):** table #, Title, Stack chips, Status badge, Actions (Edit/Delete), modal form (Title*, Number, Desc*, Stack tag-wrap, Repo/Live URL, Status select), localStorage `admin_projects`
+- **Education (`admin/education.html`):** tabs Academics/Courses, tables with Edit/Delete, modal with acadFields vs courseFields, keys `admin_academics` / `admin_courses`
+- **Blog (`admin/blog.html`):** empty-state terminal widget (`git log --oneline` empty), table Title/Status/Date, modal Title*, Slug auto, Excerpt, Markdown textarea + Preview toggle, Status, Cover URL, key `admin_blog`
+- **Shared (`admin-nav.js`, `admin.css`):** burger/overlay drawer, focus trap, toasts (`toast()` green/red dot), panels, tables, badges (success/accent/muted), chips, forms, tag-wrap input, modals
+
 ---
 
 ## File Structure
@@ -189,11 +205,20 @@ portfolio/
 │   ├── index.css              # CSS variables + Tailwind + global styles
 │   ├── pages/
 │   │   ├── Portfolio.tsx      # Main page — all 6 sections
-│   │   └── Blog.tsx           # Blog placeholder with terminal widget
+│   │   ├── Blog.tsx           # Blog placeholder with terminal widget
+│   │   └── admin/             # Hidden admin (URL only, guard)
+│   │       ├── Login.tsx
+│   │       ├── Dashboard.tsx
+│   │       ├── Projects.tsx
+│   │       ├── Education.tsx
+│   │       └── Blog.tsx
 │   ├── components/
 │   │   ├── layout/
 │   │   │   ├── Navbar.tsx     # Fixed nav + mobile drawer
 │   │   │   └── Footer.tsx     # Copyright + back to top
+│   │   ├── admin/
+│   │   │   ├── AdminLayout.tsx # Sidebar + topbar + overlay
+│   │   │   └── AdminGuard.tsx  # auth redirect
 │   │   ├── sections/
 │   │   │   ├── Hero.tsx
 │   │   │   ├── Objectives.tsx
@@ -208,10 +233,13 @@ portfolio/
 │   │       ├── Badge.tsx       # Status badge (done/live)
 │   │       ├── Chip.tsx        # Tech stack chip
 │   │       └── Button.tsx      # Primary/ghost button
+│   ├── hooks/
+│   │   └── useAdminAuth.ts    # localStorage guard
 │   └── data/
 │       ├── projects.ts
 │       ├── academics.ts
-│       └── courses.ts
+│       ├── courses.ts
+│       └── blog.ts            # future blog posts
 └── README.md
 ```
 
@@ -277,6 +305,19 @@ portfolio/
 | 29 | Test `npm run dev` |
 | 30 | Test `npm run build` |
 
+### Phase 8: Admin Panel (Hidden, URL-only)
+| Step | Task | Spec |
+|------|------|------|
+| 31 | Auth hook + guard | `useAdminAuth.ts` — `localStorage admin_auth`, `guard()` redirect, `admin@nureallhi.dev / admin123` |
+| 32 | Admin layout | `AdminLayout.tsx` — sidebar 240px, topbar sticky 64px, drawer <820px, overlay, `admin.css` tokens |
+| 33 | Login page | `admin/Login.tsx` — centered 400px card, email+pass, error states |
+| 34 | Dashboard | `admin/Dashboard.tsx` — stat grid 4, activity, quick actions |
+| 35 | Projects admin | `admin/Projects.tsx` — table + modal, tag-wrap, `admin_projects` storage |
+| 36 | Education admin | `admin/Education.tsx` — tabs Academics/Courses, `admin_academics`/`admin_courses` |
+| 37 | Blog admin | `admin/Blog.tsx` — empty terminal state, markdown + preview, `admin_blog` |
+| 38 | Routing + guard | `App.tsx` — `/admin/*` guarded, no public link |
+| 39 | Verify | `npm run build` + manual test login→CRUD→logout |
+
 ---
 
 ## Dependencies
@@ -287,6 +328,7 @@ portfolio/
 | `tailwindcss` | dev | Utility CSS |
 | `postcss` | dev | CSS processing |
 | `autoprefixer` | dev | Vendor prefixes |
+| `@tailwindcss/vite` | dev | Tailwind Vite plugin (v4) |
 
 > No animation libraries needed — typewriter and scroll reveal use vanilla JS/CSS.
 
@@ -305,15 +347,20 @@ portfolio/
 ---
 
 ## Success Criteria
-- [ ] Exact visual match to DESIGNS/index.html
-- [ ] Exact visual match to DESIGNS/blog.html
-- [ ] `npm run dev` starts without errors
-- [ ] `npm run build` produces clean output
-- [ ] All 6 portfolio sections render
-- [ ] Blog placeholder page renders
-- [ ] Typewriter effect works
-- [ ] Flow trace line animates
-- [ ] Scroll reveal works
-- [ ] Mobile drawer works
-- [ ] Responsive at 820px and 900px breakpoints
-- [ ] `prefers-reduced-motion` respected
+- [x] Exact visual match to DESIGNS/index.html
+- [x] Exact visual match to DESIGNS/blog.html
+- [x] `npm run dev` starts without errors
+- [x] `npm run build` produces clean output
+- [x] All 6 portfolio sections render
+- [x] Blog placeholder page renders
+- [x] Typewriter effect works
+- [x] Flow trace line animates
+- [x] Scroll reveal works
+- [x] Mobile drawer works
+- [x] Responsive at 820px and 900px breakpoints
+- [x] `prefers-reduced-motion` respected
+- [ ] Admin: exact match to DESIGNS/admin/*.html + admin.css
+- [ ] Admin: URL-only access, no public link, guard redirects to login
+- [ ] Admin: login admin@nureallhi.dev / admin123 → dashboard, logout works
+- [ ] Admin: CRUD Projects / Education (tabs) / Blog with localStorage
+- [ ] Admin: responsive + toast feedback

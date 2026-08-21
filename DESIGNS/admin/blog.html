@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog — Nur E Allhi Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.preview-panel{display:none;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad-sm);padding:20px;margin-top:12px;font-size:14px;line-height:1.7;max-height:400px;overflow-y:auto}
+.preview-panel.open{display:block}
+.preview-panel h1,.preview-panel h2,.preview-panel h3{font-family:var(--font-display);margin:16px 0 8px}
+.preview-panel h1{font-size:24px}.preview-panel h2{font-size:20px}.preview-panel h3{font-size:17px}
+.preview-panel p{margin-bottom:12px}
+.preview-panel code{font-family:var(--font-mono);font-size:13px;background:rgba(79,209,197,.08);padding:2px 6px;border-radius:4px}
+.preview-panel pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-sm);padding:14px;overflow-x:auto;margin:12px 0}
+.preview-panel pre code{background:none;padding:0}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div id="toasts" class="toast-wrap"></div>
+
+<div class="admin-wrap">
+  <aside class="sidebar" id="sidebar" aria-label="Admin navigation">
+    <div class="sidebar-brand"><span class="ba">~/</span>nur-e-allhi <span style="opacity:.4">· admin</span></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a href="projects.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projects</a>
+      <a href="education.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 6 3 6 3s3 0 6-3v-5"/></svg>Education</a>
+      <a href="blog.html" class="active"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Blog</a>
+    </nav>
+    <div class="sidebar-footer"><button onclick="AdminAuth.logout()" style="background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:0">Logout</button></div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <h1>Blog</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" onclick="openModal()" data-od-id="add-post-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Post
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content" id="main-content">
+      <!-- list view -->
+      <div id="listView">
+        <div class="panel" data-od-id="blog-table" id="tablePanel" style="display:none">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Status</th><th>Date</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody id="postRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- empty state -->
+        <div id="emptyState" class="panel" data-od-id="blog-empty">
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+              </svg>
+            </div>
+            <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rad-sm);padding:16px 20px;font-family:var(--font-mono);font-size:13px;text-align:left;max-width:400px;width:100%">
+              <p style="margin-bottom:8px"><span style="color:var(--accent)">$</span> git log --oneline</p>
+              <p style="color:var(--muted);margin-bottom:8px"><span class="badge badge-muted" style="font-size:10px">empty</span> No commits yet</p>
+              <p style="margin-bottom:8px"><span style="color:var(--accent)">$</span> <span style="color:var(--muted)">_</span></p>
+            </div>
+            <p style="color:var(--muted);font-size:14px;margin-top:4px">No posts yet — create your first post</p>
+            <button class="btn btn-primary btn-sm" onclick="openModal()" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Post
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="blogModal" data-od-id="blog-modal">
+  <div class="modal" role="dialog" aria-labelledby="blogModalTitle" style="max-width:700px">
+    <div class="modal-header">
+      <h2 id="blogModalTitle">New Post</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <form id="blogForm" novalidate>
+      <input type="hidden" id="editIdx" value="-1">
+      <div class="form-group">
+        <label class="form-label" for="bTitle">Title <span class="req">*</span></label>
+        <input class="form-input" id="bTitle" placeholder="How I built my first network lab" required data-od-id="blog-title-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="bSlug">Slug</label>
+        <input class="form-input" id="bSlug" placeholder="auto-generated-from-title" style="font-family:var(--font-mono);font-size:13px" data-od-id="blog-slug">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="bExcerpt">Excerpt</label>
+        <input class="form-input" id="bExcerpt" placeholder="A short summary for the list view...">
+      </div>
+      <div class="form-group">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <label class="form-label" for="bContent" style="margin-bottom:0">Content (Markdown)</label>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="togglePreview()" id="previewBtn" style="padding:4px 10px;font-size:11px">Preview</button>
+        </div>
+        <textarea class="form-textarea mono" id="bContent" rows="10" placeholder="# Heading&#10;&#10;Write your post in markdown..." required data-od-id="blog-content"></textarea>
+        <div class="preview-panel" id="previewPanel"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="bStatus">Status</label>
+          <select class="form-select" id="bStatus"><option value="draft">Draft</option><option value="published">Published</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bCover">Cover Image URL</label>
+          <input class="form-input" id="bCover" placeholder="https://...">
+        </div>
+      </div>
+      <div id="blogError" class="form-error" style="display:none"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" id="blogDelBtn" style="display:none;margin-right:auto" onclick="deletePost()">Delete</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="saveDraft()">Save Draft</button>
+        <button type="submit" class="btn btn-primary btn-sm">Publish</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="admin-auth.js"></script>
+<script src="admin-nav.js"></script>
+<script>
+(function () {
+  if (!AdminAuth.guard()) return;
+  AdminNav.init();
+
+  var BLOG_KEY = 'admin_blog';
+  function getData() { try { var d = JSON.parse(localStorage.getItem(BLOG_KEY)); return Array.isArray(d) ? d; } catch(e) { return []; } }
+  function saveData(d) { localStorage.setItem(BLOG_KEY, JSON.stringify(d)); }
+  var data = getData();
+
+  function render() {
+    var has = data.length > 0;
+    document.getElementById('tablePanel').style.display = has ? '' : 'none';
+    document.getElementById('emptyState').style.display = has ? 'none' : '';
+    if (!has) return;
+    document.getElementById('postRows').innerHTML = data.map(function (p, i) {
+      var st = p.status === 'published'
+        ? '<span class="badge badge-success">Published</span>'
+        : '<span class="badge badge-muted">Draft</span>';
+      return '<tr><td style="font-weight:500">'+p.title+'</td><td>'+st+'</td>'
+        + '<td style="font-family:var(--font-mono);font-size:12px;color:var(--muted)">'+(p.date||'—')+'</td>'
+        + '<td><div class="table-actions" style="justify-content:flex-end">'
+        + '<button class="act-edit" onclick="editPost('+i+')">Edit</button>'
+        + '<button class="act-delete" onclick="removePost('+i+')">Delete</button>'
+        + '</div></td></tr>';
+    }).join('');
+  }
+  render();
+
+  /* auto-slug */
+  document.getElementById('bTitle').addEventListener('input', function() {
+    var slug = this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    document.getElementById('bSlug').value = slug;
+  });
+
+  /* markdown preview (basic) */
+  window.togglePreview = function() {
+    var panel = document.getElementById('previewPanel');
+    var btn = document.getElementById('previewBtn');
+    if (panel.classList.contains('open')) { panel.classList.remove('open'); btn.textContent = 'Preview'; return; }
+    var md = document.getElementById('bContent').value;
+    var html = md
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '<code>$1</code>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^/, '<p>').replace(/$/, '</p>');
+    panel.innerHTML = html || '<p style="color:var(--muted)">Nothing to preview</p>';
+    panel.classList.add('open');
+    btn.textContent = 'Hide Preview';
+  };
+
+  var modal = document.getElementById('blogModal');
+  window.openModal = function(idx) {
+    document.getElementById('editIdx').value = idx !== undefined ? idx : -1;
+    document.getElementById('blogModalTitle').textContent = idx !== undefined ? 'Edit Post' : 'New Post';
+    document.getElementById('blogDelBtn').style.display = idx !== undefined ? '' : 'none';
+    document.getElementById('blogError').style.display = 'none';
+    var pp = document.getElementById('previewPanel'); pp.classList.remove('open');
+    document.getElementById('previewBtn').textContent = 'Preview';
+    if (idx !== undefined) {
+      var p = data[idx];
+      document.getElementById('bTitle').value = p.title;
+      document.getElementById('bSlug').value = p.slug || '';
+      document.getElementById('bExcerpt').value = p.excerpt || '';
+      document.getElementById('bContent').value = p.content || '';
+      document.getElementById('bStatus').value = p.status;
+      document.getElementById('bCover').value = p.cover || '';
+    } else {
+      document.getElementById('blogForm').reset();
+    }
+    modal.classList.add('open');
+    document.getElementById('bTitle').focus();
+  };
+  window.closeModal = function(){ modal.classList.remove('open'); };
+  modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
+  window.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))closeModal()});
+
+  window.editPost = function(i){ openModal(i); };
+  window.removePost = function(i){
+    if(!confirm('Delete "'+data[i].title+'" — are you sure?'))return;
+    data.splice(i,1); saveData(data); render();
+    AdminNav.toast('Post deleted','error');
+  };
+  window.deletePost = function(){
+    var idx = parseInt(document.getElementById('editIdx').value);
+    if(idx>=0) removePost(idx);
+  };
+
+  function getObj(publish) {
+    return {
+      title: document.getElementById('bTitle').value.trim(),
+      slug: document.getElementById('bSlug').value.trim(),
+      excerpt: document.getElementById('bExcerpt').value.trim(),
+      content: document.getElementById('bContent').value,
+      status: publish ? 'published' : document.getElementById('bStatus').value,
+      cover: document.getElementById('bCover').value.trim(),
+      date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' })
+    };
+  }
+
+  window.saveDraft = function() {
+    var t = document.getElementById('bTitle').value.trim();
+    var err = document.getElementById('blogError');
+    err.style.display = 'none';
+    if (!t) { err.textContent = 'Title is required.'; err.style.display = 'block'; return; }
+    var idx = parseInt(document.getElementById('editIdx').value);
+    var obj = getObj(false); obj.status = 'draft';
+    if (idx >= 0) { data[idx] = obj; AdminNav.toast('Draft saved'); }
+    else { data.push(obj); AdminNav.toast('Draft created'); }
+    saveData(data); render(); closeModal();
+  };
+
+  document.getElementById('blogForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var t = document.getElementById('bTitle').value.trim();
+    var err = document.getElementById('blogError');
+    err.style.display = 'none';
+    if (!t) { err.textContent = 'Title is required.'; err.style.display = 'block'; return; }
+    var idx = parseInt(document.getElementById('editIdx').value);
+    var obj = getObj(true);
+    if (idx >= 0) { data[idx] = obj; AdminNav.toast('Post published'); }
+    else { data.push(obj); AdminNav.toast('Post published'); }
+    saveData(data); render(); closeModal();
+  });
+
+  if (location.hash === '#new') openModal();
+})();
+</script>
+</body>
+</html>

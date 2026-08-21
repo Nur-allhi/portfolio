@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Education — Nur E Allhi Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div id="toasts" class="toast-wrap"></div>
+
+<div class="admin-wrap">
+  <aside class="sidebar" id="sidebar" aria-label="Admin navigation">
+    <div class="sidebar-brand"><span class="ba">~/</span>nur-e-allhi <span style="opacity:.4">· admin</span></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a href="projects.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projects</a>
+      <a href="education.html" class="active"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 6 3 6 3s3 0 6-3v-5"/></svg>Education</a>
+      <a href="blog.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Blog</a>
+    </nav>
+    <div class="sidebar-footer"><button onclick="AdminAuth.logout()" style="background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:0">Logout</button></div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <h1>Education</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" id="addBtn" onclick="openModal()">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Entry
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content" id="main-content">
+      <div class="tab-bar" data-od-id="edu-tabs">
+        <button class="active" onclick="switchTab('academics')">Academics</button>
+        <button onclick="switchTab('courses')">Professional Courses</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-academics">
+        <div class="panel"><div class="table-wrap"><table>
+          <thead><tr><th>Title</th><th>Subtitle</th><th>Year</th><th>Status</th><th>Institution</th><th style="text-align:right">Actions</th></tr></thead>
+          <tbody id="acadRows"></tbody>
+        </table></div></div>
+      </div>
+
+      <div class="tab-panel" id="panel-courses">
+        <div class="panel"><div class="table-wrap"><table>
+          <thead><tr><th>Title</th><th>Provider</th><th>Year</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+          <tbody id="courseRows"></tbody>
+        </table></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="eduModal" data-od-id="edu-modal">
+  <div class="modal" role="dialog" aria-labelledby="eduModalTitle">
+    <div class="modal-header">
+      <h2 id="eduModalTitle">Add Entry</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <form id="eduForm" novalidate>
+      <input type="hidden" id="editTab" value="academics">
+      <input type="hidden" id="editIdx" value="-1">
+      <div id="acadFields">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="eTitle">Title <span class="req">*</span></label>
+            <input class="form-input" id="eTitle" placeholder="BBA" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="eSub">Subtitle</label>
+            <input class="form-input" id="eSub" placeholder="Bachelor of Business Administration">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="eYear">Year</label>
+            <input class="form-input" id="eYear" placeholder="20— – 20—" style="font-family:var(--font-mono)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="eStatus">Status</label>
+            <select class="form-select" id="eStatus"><option value="completed">Completed</option><option value="in-progress">In Progress</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="eInst">Institution</label>
+          <input class="form-input" id="eInst" placeholder="University name">
+        </div>
+      </div>
+      <div id="courseFields" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="cTitle">Title <span class="req">*</span></label>
+            <input class="form-input" id="cTitle" placeholder="Web Development" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cProvider">Provider</label>
+            <input class="form-input" id="cProvider" placeholder="Programming Hero">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="cYear">Year</label>
+            <input class="form-input" id="cYear" placeholder="2021" style="font-family:var(--font-mono)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cStatus">Status</label>
+            <select class="form-select" id="cStatus"><option value="completed">Completed</option><option value="in-progress">In Progress</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cDesc">Description</label>
+          <textarea class="form-textarea" id="cDesc" rows="2" placeholder="Full-track bootcamp — from HTML fundamentals..."></textarea>
+        </div>
+      </div>
+      <div id="eduError" class="form-error" style="display:none"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" id="eduDelBtn" style="display:none;margin-right:auto" onclick="deleteEntry()">Delete</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="admin-auth.js"></script>
+<script src="admin-nav.js"></script>
+<script>
+(function () {
+  if (!AdminAuth.guard()) return;
+  AdminNav.init();
+
+  var ACAD_KEY = 'admin_academics';
+  var COURSE_KEY = 'admin_courses';
+  var acadDefaults = [
+    { title:'Higher Secondary School', sub:'Higher Secondary School Certificate', year:'20—', status:'completed', inst:'—' },
+    { title:'BBA', sub:'Bachelor of Business Administration', year:'20— – 20—', status:'completed', inst:'—' },
+    { title:'MBA', sub:'Master of Business Administration', year:'20— – 20—', status:'in-progress', inst:'—' }
+  ];
+  var courseDefaults = [
+    { title:'Web Development', provider:'Programming Hero', year:'2021', status:'completed', desc:'Full-track bootcamp — from HTML fundamentals to shipping responsive web apps.' },
+    { title:'PGD in Network Solutions & System Administration', provider:'IsDB Scholarship', year:'Present', status:'in-progress', desc:'Post-graduate diploma covering network design, administration and system hardening.' }
+  ];
+
+  function get(key, def) { try { var d = JSON.parse(localStorage.getItem(key)); return Array.isArray(d) && d.length ? d : def; } catch(e) { return def; } }
+  function save(key, d) { localStorage.setItem(key, JSON.stringify(d)); }
+  var acadData = get(ACAD_KEY, acadDefaults);
+  var courseData = get(COURSE_KEY, courseDefaults);
+
+  function badge(s) { return s === 'completed'
+    ? '<span class="badge badge-success">Completed</span>'
+    : '<span class="badge badge-accent">In Progress</span>'; }
+
+  function renderAcad() {
+    document.getElementById('acadRows').innerHTML = acadData.map(function (a, i) {
+      return '<tr><td style="font-weight:500">'+a.title+'</td><td style="color:var(--muted)">'+(a.sub||'—')+'</td>'
+        + '<td style="font-family:var(--font-mono);font-size:12px;color:var(--muted)">'+(a.year||'—')+'</td>'
+        + '<td>'+badge(a.status)+'</td><td style="color:var(--muted)">'+(a.inst||'—')+'</td>'
+        + '<td><div class="table-actions" style="justify-content:flex-end">'
+        + '<button class="act-edit" onclick="editEntry(\'academics\','+i+')">Edit</button>'
+        + '<button class="act-delete" onclick="removeEntry(\'academics\','+i+')">Delete</button>'
+        + '</div></td></tr>';
+    }).join('');
+  }
+  function renderCourse() {
+    document.getElementById('courseRows').innerHTML = courseData.map(function (c, i) {
+      return '<tr><td style="font-weight:500">'+c.title+'</td><td style="color:var(--muted)">'+(c.provider||'—')+'</td>'
+        + '<td style="font-family:var(--font-mono);font-size:12px;color:var(--muted)">'+(c.year||'—')+'</td>'
+        + '<td>'+badge(c.status)+'</td>'
+        + '<td><div class="table-actions" style="justify-content:flex-end">'
+        + '<button class="act-edit" onclick="editEntry(\'courses\','+i+')">Edit</button>'
+        + '<button class="act-delete" onclick="removeEntry(\'courses\','+i+')">Delete</button>'
+        + '</div></td></tr>';
+    }).join('');
+  }
+  renderAcad(); renderCourse();
+
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.tab-bar button').forEach(function(b,i){ b.classList.toggle('active', (tab==='academics'?i===0:i===1)); });
+    document.getElementById('panel-academics').classList.toggle('active', tab==='academics');
+    document.getElementById('panel-courses').classList.toggle('active', tab==='courses');
+    document.getElementById('addBtn').setAttribute('onclick', "openModal('"+tab+"')");
+  };
+
+  var modal = document.getElementById('eduModal');
+  window.openModal = function(tab, idx) {
+    tab = tab || 'academics';
+    document.getElementById('editTab').value = tab;
+    document.getElementById('editIdx').value = idx !== undefined ? idx : -1;
+    document.getElementById('eduModalTitle').textContent = idx !== undefined ? 'Edit Entry' : 'Add Entry';
+    document.getElementById('eduDelBtn').style.display = idx !== undefined ? '' : 'none';
+    document.getElementById('eduError').style.display = 'none';
+    var showAcad = tab === 'academics';
+    document.getElementById('acadFields').style.display = showAcad ? '' : 'none';
+    document.getElementById('courseFields').style.display = showAcad ? 'none' : '';
+    if (idx !== undefined) {
+      var src = showAcad ? acadData[idx] : courseData[idx];
+      if (showAcad) {
+        document.getElementById('eTitle').value = src.title;
+        document.getElementById('eSub').value = src.sub || '';
+        document.getElementById('eYear').value = src.year || '';
+        document.getElementById('eStatus').value = src.status;
+        document.getElementById('eInst').value = src.inst || '';
+      } else {
+        document.getElementById('cTitle').value = src.title;
+        document.getElementById('cProvider').value = src.provider || '';
+        document.getElementById('cYear').value = src.year || '';
+        document.getElementById('cStatus').value = src.status;
+        document.getElementById('cDesc').value = src.desc || '';
+      }
+    } else {
+      document.getElementById('eduForm').reset();
+    }
+    modal.classList.add('open');
+    document.getElementById(showAcad?'eTitle':'cTitle').focus();
+  };
+  window.closeModal = function(){ modal.classList.remove('open'); };
+  modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
+  window.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))closeModal()});
+
+  window.editEntry = function(tab,i){ openModal(tab, i); };
+  window.removeEntry = function(tab,i){
+    var arr = tab==='academics'?acadData:courseData;
+    if(!confirm('Delete "'+arr[i].title+'" — are you sure?'))return;
+    arr.splice(i,1); save(tab==='academics'?ACAD_KEY:COURSE_KEY, arr);
+    renderAcad(); renderCourse();
+    AdminNav.toast('Entry deleted','error');
+  };
+  window.deleteEntry = function(){
+    var tab = document.getElementById('editTab').value;
+    var idx = parseInt(document.getElementById('editIdx').value);
+    if(idx>=0) removeEntry(tab, idx);
+  };
+
+  document.getElementById('eduForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var tab = document.getElementById('editTab').value;
+    var idx = parseInt(document.getElementById('editIdx').value);
+    var arr = tab==='academics'?acadData:courseData;
+    var err = document.getElementById('eduError');
+    err.style.display = 'none';
+    if(tab==='academics'){
+      var t=document.getElementById('eTitle').value.trim();
+      if(!t){err.textContent='Title is required.';err.style.display='block';return;}
+      var obj={title:t,sub:document.getElementById('eSub').value.trim(),year:document.getElementById('eYear').value.trim(),status:document.getElementById('eStatus').value,inst:document.getElementById('eInst').value.trim()};
+    } else {
+      var t=document.getElementById('cTitle').value.trim();
+      if(!t){err.textContent='Title is required.';err.style.display='block';return;}
+      var obj={title:t,provider:document.getElementById('cProvider').value.trim(),year:document.getElementById('cYear').value.trim(),status:document.getElementById('cStatus').value,desc:document.getElementById('cDesc').value.trim()};
+    }
+    if(idx>=0){arr[idx]=obj;AdminNav.toast('Entry updated');}
+    else{arr.push(obj);AdminNav.toast('Entry added');}
+    save(tab==='academics'?ACAD_KEY:COURSE_KEY, arr);
+    renderAcad(); renderCourse(); closeModal();
+  });
+})();
+</script>
+</body>
+</html>

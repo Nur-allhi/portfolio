@@ -1,7 +1,7 @@
 # Technical Architecture Document — Dev Portfolio Website
 
 ## System Overview
-Static single-page application (SPA) deployed to Vercel/Netlify. No backend, no database, no server-side rendering.
+Static SPA deployed to Vercel/Netlify. No backend. Public site is read-only; admin panel (hidden URL) uses localStorage for CRUD.
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -16,9 +16,13 @@ Static single-page application (SPA) deployed to Vercel/Netlify. No backend, no 
                   │
 ┌─────────────────▼───────────────────────────┐
 │           React SPA (Client-Side)            │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │  Hero   │  │Projects │  │ Contact │     │
-│  └─────────┘  └─────────┘  └─────────┘     │
+│  ┌─────────────┐ ┌─────────────┐            │
+│  │  Public     │ │  Admin      │            │
+│  │  / , /blog  │ │  /admin/*   │            │
+│  │  Hero etc.  │ │  Login/Dash │            │
+│  └──────┬──────┘ └──────┬──────┘            │
+│         │               │                   │
+│         └── localStorage (admin_*) ──┘     │
 └─────────────────────────────────────────────┘
 ```
 
@@ -32,35 +36,31 @@ portfolio/
 ├── tsconfig.json
 ├── tailwind.config.ts
 ├── postcss.config.js
+├── DESIGNS/admin/                  # exact admin reference
 ├── src/
-│   ├── main.tsx                    # Entry point
-│   ├── App.tsx                     # Router setup
-│   ├── index.css                   # Global styles + CSS vars
+│   ├── main.tsx
+│   ├── App.tsx                     # Router + admin guard
+│   ├── index.css
 │   ├── pages/
-│   │   ├── Portfolio.tsx           # Main page
-│   │   └── Blog.tsx                # Blog placeholder
+│   │   ├── Portfolio.tsx
+│   │   ├── Blog.tsx
+│   │   └── admin/
+│   │       ├── Login.tsx
+│   │       ├── Dashboard.tsx
+│   │       ├── Projects.tsx
+│   │       ├── Education.tsx
+│   │       └── Blog.tsx
 │   ├── components/
-│   │   ├── layout/
-│   │   │   ├── Navbar.tsx          # Fixed nav + drawer
-│   │   │   └── Footer.tsx          # Site footer
-│   │   ├── sections/
-│   │   │   ├── Hero.tsx
-│   │   │   ├── Objectives.tsx
-│   │   │   ├── Projects.tsx
-│   │   │   ├── ProfessionalCourses.tsx
-│   │   │   ├── Academics.tsx
-│   │   │   └── Contact.tsx
-│   │   └── ui/
-│   │       ├── FlowLine.tsx        # Animated trace line
-│   │       ├── ScrollReveal.tsx    # Intersection Observer
-│   │       ├── Typewriter.tsx      # Typewriter effect
-│   │       ├── Badge.tsx           # Status badges
-│   │       ├── Chip.tsx            # Tech stack chips
-│   │       └── Button.tsx          # CTA buttons
+│   │   ├── layout/Navbar.tsx, Footer.tsx
+│   │   ├── admin/AdminLayout.tsx, AdminGuard.tsx
+│   │   ├── sections/ (Hero, Objectives, Projects, ...)
+│   │   └── ui/ (FlowLine, ScrollReveal, Typewriter, Badge, Chip, Button)
+│   ├── hooks/useAdminAuth.ts
 │   └── data/
-│       ├── projects.ts             # Project metadata
-│       ├── academics.ts            # Education entries
-│       └── courses.ts              # Course entries
+│       ├── projects.ts
+│       ├── academics.ts
+│       ├── courses.ts
+│       └── blog.ts
 └── README.md
 ```
 
@@ -104,20 +104,49 @@ interface Course {
 }
 ```
 
+### BlogPost (admin)
+```typescript
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string; // markdown
+  status: 'draft' | 'published';
+  cover?: string;
+  date: string;
+}
+```
+
 ## Routing
 
 | Route | Component | Description |
 |-------|-----------|-------------|
 | `/` | `Portfolio.tsx` | Main portfolio page |
 | `/blog` | `Blog.tsx` | Blog placeholder |
+| `/admin/login` | `admin/Login.tsx` | Login (public) |
+| `/admin` | `admin/Dashboard.tsx` | Dashboard (guarded) |
+| `/admin/projects` | `admin/Projects.tsx` | Projects CRUD (guarded) |
+| `/admin/education` | `admin/Education.tsx` | Education CRUD tabs (guarded) |
+| `/admin/blog` | `admin/Blog.tsx` | Blog CRUD (guarded) |
+
+> Admin is URL-only, no public link. Guard checks `localStorage.admin_auth === '1'`.
+
+### Admin Storage (localStorage)
+
+| Key | Model |
+|-----|-------|
+| `admin_auth` | `"1"` if logged in |
+| `admin_projects` | `Project[]` |
+| `admin_academics` | `AcademicEntry[]` |
+| `admin_courses` | `Course[]` |
+| `admin_blog` | `BlogPost[]` |
+
+Credentials (MVP): `admin@nureallhi.dev` / `admin123` (`DESIGNS/admin/admin-auth.js:4`).
 
 ## State Management
-- **No global state needed** — all data is static
-- Component-local state for:
-  - Navbar scroll state (`isScrolled`)
-  - Mobile drawer open/close
-  - Typewriter animation phase
-  - Scroll reveal intersection status
+- Public: static data + component-local state (navbar, typewriter, scroll reveal)
+- Admin: localStorage as source of truth, React state mirrors it, toasts for feedback
 
 ## Build & Deploy
 
@@ -149,11 +178,10 @@ npm run preview      # preview localhost:4173
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| react | ^18.x | UI framework |
-| react-dom | ^18.x | DOM rendering |
+| react | ^19.x | UI framework |
+| react-dom | ^19.x | DOM rendering |
 | react-router-dom | ^6.x | Client-side routing |
-| tailwindcss | ^3.x | Utility CSS |
-| postcss | ^8.x | CSS processing |
-| autoprefixer | ^10.x | Vendor prefixes |
-| vite | ^5.x | Build tool |
-| typescript | ^5.x | Type safety |
+| tailwindcss | ^4.x | Utility CSS |
+| @tailwindcss/vite | ^4.x | Tailwind Vite plugin |
+| vite | ^8.x | Build tool |
+| typescript | ^6.x | Type safety |

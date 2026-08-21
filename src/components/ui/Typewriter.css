@@ -1,0 +1,7 @@
+.type-line {
+  font-family: var(--font-mono); font-size: clamp(16px, 2.6vw, 21px); color: var(--fg);
+  margin-top: 20px; min-height: 1.6em; display: flex; justify-content: center; align-items: center; gap: 10px;
+}
+.type-line .prompt { color: var(--accent); }
+.type-line .caret { display: inline-block; width: 9px; height: 1.1em; background: var(--accent); border-radius: 1px; margin-left: 4px; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }

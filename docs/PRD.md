@@ -43,9 +43,18 @@ A personal developer portfolio website for Nur E Allhi to showcase projects, ski
 - Location note (Bangladesh, open to remote)
 
 ### 7. Blog Page (Placeholder)
-- "Coming soon" message
+- "Coming soon" message (public)
 - Terminal-style widget
 - Back to portfolio CTA
+
+### 8. Admin Panel (Hidden, URL-only) — from `DESIGNS/admin/`
+- Access: `/admin/login` → `/admin` dashboard, no public link/button
+- Auth: simple `admin@nureallhi.dev / admin123` (localStorage `admin_auth`, `DESIGNS/admin/admin-auth.js:2`)
+- Dashboard: stats (Projects, Education, Courses, Blog) + recent activity + quick actions
+- Projects: table (Stack chips, Status badge) + modal CRUD (Title, Number, Desc, Stack tag-wrap, Repo/Live URL, Status), `admin_projects`
+- Education: tabs Academics / Courses, tables + modal, `admin_academics` / `admin_courses`
+- Blog: table (Status, Date) + empty terminal state + modal (Title→auto-slug, Excerpt, Markdown + Preview, Status, Cover), `admin_blog`
+- Shared: sidebar 240px + topbar + drawer <820px, toasts, panels, forms, modals
 
 ## User Workflows
 
@@ -65,18 +74,24 @@ A personal developer portfolio website for Nur E Allhi to showcase projects, ski
 - [ ] All sections render on mobile, tablet, desktop
 - [ ] Typewriter animation works without jank
 - [ ] All links functional (GitHub, LinkedIn, email)
-- [ ] Visual match to design files (DESIGNS/)
+- [ ] Visual match to `DESIGNS/index.html` + `blog.html`
+- [ ] Admin: login → dashboard → CRUD Projects/Education/Blog with persistence
+
+### Admin User Workflow
+1. Go to `/admin/login` → sign in (`admin@nureallhi.dev / admin123`)
+2. Dashboard → see stats → Quick Actions
+3. Projects/Education/Blog → Add/Edit/Delete → toast feedback → persists to localStorage
+4. Logout → redirected to login, guard blocks `/admin/*`
 
 ## Out of Scope (v1)
-- Blog content management
-- Backend/API
-- User authentication
+- Backend/API (admin is localStorage-only for now)
 - Analytics tracking
 - CMS integration
 
+> Auth is MVP localStorage-only (`DESIGNS/admin/admin-auth.js:4`), no JWT yet.
+
 ## Tech Stack
-- React 18 + TypeScript
-- Vite (build tool)
-- Tailwind CSS (utility-first styling)
-- React Router (SPA routing)
-- No backend required
+- React 19 + TypeScript + Vite 8
+- Tailwind CSS 4 (`@tailwindcss/vite`)
+- React Router 6 (SPA: `/`, `/blog`, `/admin/*`)
+- No backend required (admin uses localStorage)
