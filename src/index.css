@@ -60,6 +60,68 @@ h1,h2,h3 { font-family: var(--font-display); line-height: 1.12; font-weight: 600
 p { text-wrap: pretty; }
 a { color: var(--accent); }
 img,svg { display: block; max-width: 100%; }
+/* ============ responsive: tablet + mobile (most users) ============ */
+@media (max-width: 768px) {
+  :root { --wrap: 100%; }
+  .section { padding: 64px 0; }
+  .sec-head { margin-bottom: 28px; }
+  .sec-head h2 { font-size: clamp(26px, 6vw, 32px); }
+  .sec-lead { font-size: 15px; }
+  .goal-grid, .course-grid, .project-grid { grid-template-columns: 1fr; gap: 16px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .card, .course-card, .project-card, .panel { padding: 20px; }
+  .hero { padding: calc(var(--nav-h) + 28px) 0 64px; }
+  .hero h1 { font-size: clamp(32px, 10vw, 48px); margin-top: 16px; }
+  .hero-lead { font-size: 15px; padding-inline: 4px; }
+  .type-line { font-size: clamp(14px, 4vw, 18px); flex-wrap: wrap; }
+  .flow-strip { flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px 20px; }
+  .timeline { padding-left: 28px; }
+  .contact .wrap { padding-inline: 20px; }
+  .blog-inner { padding-inline: 20px; }
+  /* admin: stack form rows, make tables scrollable */
+  .form-row { grid-template-columns: 1fr; }
+  .table-wrap { -webkit-overflow-scrolling: touch; }
+  table { min-width: 560px; }
+}
+@media (max-width: 640px) {
+  .hero h1 { font-size: clamp(28px, 9vw, 40px); }
+  .hero-kicker { font-size: 11px; gap: 8px; }
+  .hero-cta { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-cta .btn { justify-content: center; width: 100%; min-height: 44px; }
+  .socials { gap: 10px; margin-top: 22px; }
+  .kicker { font-size: 11px; }
+  .card h3, .course-card h3 { font-size: 18px; }
+  .card p, .course-desc, .pdesc { font-size: 14px; }
+  .tl-item h3 { font-size: 18px; }
+  .email-big { font-size: clamp(15px, 4.5vw, 18px); word-break: break-all; }
+  .contact-note { font-size: 12px; padding-inline: 8px; }
+  .site-footer { flex-direction: column; align-items: flex-start; gap: 8px; padding: 20px; }
+  .blog-inner h1 { font-size: clamp(28px, 8vw, 40px); }
+  .term { margin: 24px auto 0; }
+  .term-body { font-size: 12px; padding: 16px 14px; }
+  .blog-main { padding: calc(var(--nav-h) + 24px) 0 40px; }
+  /* prevent iOS zoom, ensure touch targets */
+  .form-input, .form-select, .form-textarea { font-size: 16px; }
+  .btn, .soc, .burger { min-height: 44px; min-width: 44px; }
+}
+
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .hero { min-height: 92svh; }
+  .hero h1 { font-size: 30px; }
+  .type-line { font-size: 14px; }
+  .hero-lead { font-size: 14px; line-height: 1.6; }
+  .sec-head h2 { font-size: 24px; }
+  .timeline::before { left: 4px; }
+  .tl-item::before { left: -28px; width: 10px; height: 10px; }
+  .tl-item { padding-bottom: 28px; }
+  .panel { padding: 18px; }
+  .modal { padding: 20px; width: 96vw; }
+  .admin-content { padding: 20px 16px; }
+  .admin-topbar { padding: 0 16px; }
+  .admin-topbar h1 { font-size: 18px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
