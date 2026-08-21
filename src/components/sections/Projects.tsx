@@ -1,9 +1,23 @@
-import { projects } from "../../data/projects";
+import { useEffect, useState } from "react";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import { projects as fallback } from "../../data/projects";
 import { Chip } from "../ui/Chip";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import "./Projects.css";
 
 export function Projects() {
+  const [rows, setRows] = useState(fallback);
+  useEffect(() => {
+    const q = query(collection(db, "projects"), orderBy("order", "asc"));
+    const unsub = onSnapshot(q, (snap) => {
+      if (!snap.empty) setRows(snap.docs.map(d => {
+        const v = d.data() as { title: string; num: string; desc: string; stack: string[]; repo: string; live: string; status: string };
+        return { id: d.id, number: v.num, title: v.title, description: v.desc, stack: v.stack, repoUrl: v.repo, liveUrl: v.live, status: v.status };
+      }));
+    });
+    return () => unsub();
+  }, []);
   return (
     <section id="projects" className="section">
       <div className="wrap">
@@ -15,7 +29,7 @@ export function Projects() {
           </div>
         </ScrollReveal>
         <div className="project-grid">
-          {projects.map((p, i) => (
+          {rows.map((p, i) => (
             <ScrollReveal key={p.id} delay={i ? `${i * 0.08}s` : undefined}>
               <article className="project-card">
                 <div className="project-top">

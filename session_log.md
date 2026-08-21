@@ -65,3 +65,22 @@
 
 ### Status
 - completed
+
+## Session 2026-08-21 14:30 — Firebase Migration
+
+### Changes
+- [src/lib/firebase.ts] — Firebase init with VITE_FIREBASE_* env
+- [.env.example, .env.local] — portfolio-nur-3c9dc config
+- [src/hooks/useAdminAuth.ts] — Firebase Auth (nureallhi1@gmail.com) via onAuthStateChanged
+- [src/components/admin/AdminGuard.tsx] — async guard
+- [src/pages/admin/*] — CRUD via Firestore collections projects/academics/courses/blog
+- [src/components/sections/Projects.tsx, Academics.tsx, ProfessionalCourses.tsx] — onSnapshot with fallback
+- [src/pages/Blog.tsx] — published posts from Firestore
+- [README.md, CHANGELOG.md] — Firebase docs
+- Verified: `npm run build` passes (84 modules, 245KB gzip)
+
+### Skill(s) Used
+- `senior-frontend`, `senior-backend`
+
+### Status
+- completed

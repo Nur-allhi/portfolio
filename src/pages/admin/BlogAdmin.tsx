@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
+import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { db } from "../../lib/firebase";
 
-type Post = { title: string; slug: string; excerpt: string; content: string; status: string; cover: string; date: string };
-const KEY = "admin_blog";
-function load(): Post[] { try { const d = JSON.parse(localStorage.getItem(KEY) || ""); if (Array.isArray(d)) return d; } catch { /* */ } return []; }
-function save(d: Post[]) { localStorage.setItem(KEY, JSON.stringify(d)); }
+type Post = { id?: string; title: string; slug: string; excerpt: string; content: string; status: string; cover: string; date: string; order: number };
+const COL = "blog";
 function toast(msg: string, err?: boolean) { const w = document.getElementById("toasts"); if (!w) return; const el = document.createElement("div"); el.className = "toast"; el.innerHTML = `<span class="dot ${err ? "dot-err" : "dot-ok"}"></span>${msg}`; w.appendChild(el); setTimeout(() => el.classList.add("out"), 3000); setTimeout(() => el.remove(), 3400); }
+function mdToHtml(md: string) { return md.replace(/^### (.+)$/gm, "<h3>$1</h3>").replace(/^## (.+)$/gm, "<h2>$1</h2>").replace(/^# (.+)$/gm, "<h1>$1</h1>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/`(.+?)`/g, "<code>$1</code>").replace(/\n\n/g, "</p><p>").replace(/^/, "<p>").replace(/$/, "</p>"); }
 
 export function BlogAdmin() {
-  const [data, setData] = useState<Post[]>(() => load());
+  const [data, setData] = useState<Post[]>([]);
   const [open, setOpen] = useState(false); const [idx, setIdx] = useState(-1);
   const [title, setTitle] = useState(""); const [slug, setSlug] = useState(""); const [excerpt, setExcerpt] = useState(""); const [content, setContent] = useState(""); const [status, setStatus] = useState("draft"); const [cover, setCover] = useState(""); const [preview, setPreview] = useState(false); const [err, setErr] = useState("");
-  useEffect(() => { save(data); }, [data]);
+
+  useEffect(() => {
+    const q = query(collection(db, COL), orderBy("order", "asc"));
+    const unsub = onSnapshot(q, (snap) => setData(snap.docs.map(d => ({ id: d.id, ...(d.data() as Post) }))), () => setData([]));
+    return () => unsub();
+  }, []);
+
   const onTitle = (v: string) => { setTitle(v); setSlug(v.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")); };
   const openModal = (i?: number) => {
     if (i !== undefined) { const p = data[i]; setIdx(i); setTitle(p.title); setSlug(p.slug); setExcerpt(p.excerpt); setContent(p.content); setStatus(p.status); setCover(p.cover); }
@@ -18,18 +25,35 @@ export function BlogAdmin() {
     setErr(""); setPreview(false); setOpen(true);
   };
   const close = () => setOpen(false);
-  const getObj = (publish?: boolean): Post => ({
+  const getObj = (publish?: boolean): Omit<Post, "id"> => ({
     title: title.trim(), slug: slug.trim(), excerpt: excerpt.trim(), content, status: publish ? "published" : status, cover: cover.trim(),
-    date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+    date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }), order: idx >= 0 ? data[idx].order : data.length
   });
-  const onPublish = (e: React.FormEvent) => {
+
+  const onPublish = async (e: React.FormEvent) => {
     e.preventDefault(); if (!title.trim()) { setErr("Title is required."); return; }
-    const obj = getObj(true); if (idx >= 0) { const n = [...data]; n[idx] = obj; setData(n); toast("Post published"); } else { setData([...data, obj]); toast("Post published"); } setOpen(false);
+    const obj = getObj(true);
+    try {
+      if (idx >= 0 && data[idx].id) await updateDoc(doc(db, COL, data[idx].id!), obj);
+      else if (idx >= 0) { const n = [...data]; n[idx] = { ...obj, id: undefined } as Post; setData(n); } else await addDoc(collection(db, COL), obj);
+      toast(idx >= 0 ? "Post published" : "Post published"); setOpen(false);
+    } catch (ex: unknown) { setErr(ex instanceof Error ? ex.message : "Save failed"); }
   };
-  const onDraft = () => { if (!title.trim()) { setErr("Title is required."); return; } const obj = getObj(); obj.status = "draft"; if (idx >= 0) { const n = [...data]; n[idx] = obj; setData(n); toast("Draft saved"); } else { setData([...data, obj]); toast("Draft created"); } setOpen(false); };
-  const del = (i: number) => { if (!confirm(`Delete "${data[i].title}" — are you sure?`)) return; setData(data.filter((_, j) => j !== i)); toast("Post deleted", true); };
-  const delCurrent = () => { if (idx >= 0) { del(idx); setOpen(false); } };
-  const mdToHtml = (md: string) => md.replace(/^### (.+)$/gm, "<h3>$1</h3>").replace(/^## (.+)$/gm, "<h2>$1</h2>").replace(/^# (.+)$/gm, "<h1>$1</h1>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/`(.+?)`/g, "<code>$1</code>").replace(/\n\n/g, "</p><p>").replace(/^/, "<p>").replace(/$/, "</p>");
+  const onDraft = async () => {
+    if (!title.trim()) { setErr("Title is required."); return; }
+    const obj = getObj(); obj.status = "draft";
+    try {
+      if (idx >= 0 && data[idx].id) await updateDoc(doc(db, COL, data[idx].id!), obj);
+      else if (idx >= 0) { const n = [...data]; n[idx] = { ...obj, id: undefined } as Post; setData(n); } else await addDoc(collection(db, COL), obj);
+      toast(idx >= 0 ? "Draft saved" : "Draft created"); setOpen(false);
+    } catch (ex: unknown) { setErr(ex instanceof Error ? ex.message : "Save failed"); }
+  };
+  const del = async (i: number) => {
+    if (!confirm(`Delete "${data[i].title}" — are you sure?`)) return;
+    try { if (data[i].id) await deleteDoc(doc(db, COL, data[i].id!)); else setData(data.filter((_, j) => j !== i)); toast("Post deleted", true); }
+    catch (ex: unknown) { toast(ex instanceof Error ? ex.message : "Delete failed", true); }
+  };
+  const delCurrent = async () => { if (idx >= 0) { await del(idx); setOpen(false); } };
 
   return (
     <>
@@ -51,7 +75,7 @@ export function BlogAdmin() {
         <div className="panel"><div className="table-wrap"><table>
           <thead><tr><th>Title</th><th>Status</th><th>Date</th><th style={{ textAlign: "right" }}>Actions</th></tr></thead>
           <tbody>{data.map((p, i) => (
-            <tr key={i}><td style={{ fontWeight: 500 }}>{p.title}</td><td>{p.status === "published" ? <span className="badge badge-success">Published</span> : <span className="badge badge-muted">Draft</span>}</td><td style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>{p.date || "—"}</td><td><div className="table-actions" style={{ justifyContent: "flex-end" }}><button className="act-edit" onClick={() => openModal(i)}>Edit</button><button className="act-delete" onClick={() => del(i)}>Delete</button></div></td></tr>
+            <tr key={p.id || i}><td style={{ fontWeight: 500 }}>{p.title}</td><td>{p.status === "published" ? <span className="badge badge-success">Published</span> : <span className="badge badge-muted">Draft</span>}</td><td style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>{p.date || "—"}</td><td><div className="table-actions" style={{ justifyContent: "flex-end" }}><button className="act-edit" onClick={() => openModal(i)}>Edit</button><button className="act-delete" onClick={() => del(i)}>Delete</button></div></td></tr>
           ))}</tbody>
         </table></div></div>
       )}

@@ -1,6 +1,36 @@
+import { useEffect, useState } from "react";
+import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import { db } from "../lib/firebase";
 import "./Blog.css";
 
+type Post = { id: string; title: string; slug: string; excerpt: string; date: string };
 export function Blog() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  useEffect(() => {
+    const q = query(collection(db, "blog"), where("status", "==", "published"), orderBy("order", "asc"));
+    const unsub = onSnapshot(q, (snap) => setPosts(snap.docs.map(d => ({ ...(d.data() as Post), id: d.id }))), () => {});
+    return () => unsub();
+  }, []);
+  if (posts.length) {
+    return (
+      <main className="blog-main" style={{ placeItems: "start", paddingTop: "calc(var(--nav-h) + 40px)" }}>
+        <div className="blog-inner" style={{ textAlign: "left", maxWidth: 720 }}>
+          <span className="kicker">~/blog</span>
+          <h1 style={{ marginTop: 16 }}>Blog</h1>
+          <div style={{ display: "grid", gap: 16, marginTop: 24 }}>
+            {posts.map(p => (
+              <article key={p.id} className="panel" style={{ padding: 20 }}>
+                <h3>{p.title}</h3>
+                <p style={{ color: "var(--muted)", fontSize: 14, marginTop: 6 }}>{p.excerpt}</p>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--muted)" }}>{p.date} · /{p.slug}</span>
+              </article>
+            ))}
+          </div>
+          <div className="blog-cta" style={{ textAlign: "center" }}><a className="btn btn-ghost" href="/">Back to portfolio <span>←</span></a></div>
+        </div>
+      </main>
+    );
+  }
   return (
     <main className="blog-main">
       <div className="blog-inner">

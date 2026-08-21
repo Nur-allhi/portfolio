@@ -20,7 +20,7 @@ export function AdminLayout() {
   }, []);
   useEffect(() => { document.body.style.overflow = open ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [open]);
 
-  const doLogout = () => { logout(); nav("/admin/login"); };
+  const doLogout = async () => { await logout(); nav("/admin/login"); };
 
   return (
     <div className="admin-wrap">
@@ -41,7 +41,7 @@ export function AdminLayout() {
             <button className={`burger ${open ? "x" : ""}`} id="burger" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(!open)}>
               <span /><span /><span />
             </button>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>admin</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>admin · nureallhi1@gmail.com</span>
           </div>
           <div className="topbar-actions">
             <a href="/" target="_blank" rel="noreferrer" style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>View site ↗</a>

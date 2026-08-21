@@ -1,31 +1,21 @@
-import { useCallback, useSyncExternalStore } from "react";
-
-const KEY = "admin_auth";
-const USER = { email: "admin@nureallhi.dev", pass: "admin123" };
-
-function subscribe(cb: () => void) {
-  window.addEventListener("storage", cb);
-  return () => window.removeEventListener("storage", cb);
-}
+import { useEffect, useState, useCallback } from "react";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
+import { auth } from "../lib/firebase";
 
 export function useAdminAuth() {
-  const isLoggedIn = useSyncExternalStore(subscribe, () => localStorage.getItem(KEY) === "1", () => false);
+  const [user, setUser] = useState<User | null>(auth.currentUser);
+  const [loading, setLoading] = useState(!auth.currentUser);
 
-  const login = useCallback((email: string, pass: string) => {
-    if (email === USER.email && pass === USER.pass) {
-      localStorage.setItem(KEY, "1");
-      window.dispatchEvent(new Event("storage"));
-      return true;
-    }
-    return false;
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => { setUser(u); setLoading(false); });
+    return () => unsub();
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(KEY);
-    window.dispatchEvent(new Event("storage"));
+  const login = useCallback(async (email: string, pass: string) => {
+    try { await signInWithEmailAndPassword(auth, email, pass); return true; } catch { return false; }
   }, []);
 
-  return { isLoggedIn, login, logout };
+  const logout = useCallback(async () => { await signOut(auth); }, []);
+
+  return { user, isLoggedIn: !!user, loading, login, logout };
 }
-
-export const ADMIN_CREDENTIALS = USER;

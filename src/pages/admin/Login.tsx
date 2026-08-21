@@ -13,11 +13,12 @@ export function Login() {
 
   if (isLoggedIn) return <Navigate to="/admin" replace />;
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr("");
     if (!email.trim() || !pass) { setErr("Both fields are required."); return; }
-    if (login(email.trim(), pass)) nav("/admin");
+    const ok = await login(email.trim(), pass);
+    if (ok) nav("/admin");
     else { setErr("Invalid credentials — try again."); setPass(""); }
   };
 
@@ -32,7 +33,7 @@ export function Login() {
         <form onSubmit={onSubmit} style={{ marginTop: 28 }} noValidate>
           <div className="form-group">
             <label className="form-label" htmlFor="email">Email <span className="req">*</span></label>
-            <input className={`form-input ${err && !email ? "error" : ""}`} type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@nureallhi.dev" required autoComplete="email" />
+            <input className={`form-input ${err && !email ? "error" : ""}`} type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="nureallhi1@gmail.com" required autoComplete="email" />
           </div>
           <div className="form-group">
             <label className="form-label" htmlFor="pass">Password <span className="req">*</span></label>
