@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { ScrollReveal } from "../components/ui/ScrollReveal";
 import "../pages/Blog.css";
 
 type Post = { title: string; slug: string; excerpt: string; content: string; date: string; cover?: string };
@@ -14,6 +15,10 @@ export function BlogPost() {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [slug]);
 
   useEffect(() => {
     if (!slug) return;
@@ -37,12 +42,12 @@ export function BlogPost() {
   return (
     <main className="blog-main" style={{ placeItems: "start", paddingTop: "calc(var(--nav-h) + 32px)" }}>
       <div className="blog-inner" style={{ textAlign: "left", maxWidth: 760 }}>
-        <Link to="/blog" style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>← Back to blog</Link>
-        <h1 style={{ marginTop: 16, fontSize: "clamp(28px,5vw,42px)" }}>{post.title}</h1>
-        <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)", marginTop: 8 }}>{post.date} · /{post.slug}</p>
-        {post.cover && <img src={post.cover} alt={post.title} style={{ width: "100%", borderRadius: "var(--rad)", marginTop: 20, border: "1px solid var(--border)" }} />}
-        {post.excerpt && <p style={{ color: "var(--muted)", marginTop: 16, fontStyle: "italic" }}>{post.excerpt}</p>}
-        <div className="panel" style={{ marginTop: 20, lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: mdToHtml(post.content || "") }} />
+        <ScrollReveal><Link to="/blog" style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)" }}>← Back to blog</Link></ScrollReveal>
+        <ScrollReveal delay=".06s"><h1 style={{ marginTop: 16, fontSize: "clamp(28px,5vw,42px)" }}>{post.title}</h1></ScrollReveal>
+        <ScrollReveal delay=".12s"><p style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--muted)", marginTop: 8 }}>{post.date} · /{post.slug}</p></ScrollReveal>
+        {post.cover && <ScrollReveal delay=".18s"><img src={post.cover} alt={post.title} style={{ width: "100%", borderRadius: "var(--rad)", marginTop: 20, border: "1px solid var(--border)" }} /></ScrollReveal>}
+        {post.excerpt && <ScrollReveal delay=".24s"><p style={{ color: "var(--muted)", marginTop: 16, fontStyle: "italic" }}>{post.excerpt}</p></ScrollReveal>}
+        <ScrollReveal delay=".30s"><div className="panel" style={{ marginTop: 20, lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: mdToHtml(post.content || "") }} /></ScrollReveal>
       </div>
     </main>
   );
