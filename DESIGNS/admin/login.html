@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login — Nur E Allhi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+.login-page{display:grid;place-items:center;min-height:100vh;position:relative;z-index:1;padding:24px}
+.login-card{width:min(400px,92vw);background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:36px 32px;position:relative}
+.login-title{font-family:var(--font-display);font-size:24px;font-weight:600;letter-spacing:-.02em;text-align:center}
+.login-sub{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+.login-icon{text-align:center;margin-bottom:20px}
+.login-icon svg{width:40px;height:40px;color:var(--accent);opacity:.7}
+.login-footer{text-align:center;margin-top:24px;font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.04em;opacity:.6}
+</style>
+</head>
+<body>
+<a href="#loginForm" class="skip-link">Skip to login form</a>
+<div id="toasts" class="toast-wrap"></div>
+
+<main class="login-page">
+  <div class="login-card" data-od-id="login-card">
+    <div class="login-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <h1 class="login-title">Admin Access</h1>
+    <p class="login-sub">Sign in to manage portfolio</p>
+
+    <form id="loginForm" style="margin-top:28px" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="email">Email <span class="req">*</span></label>
+        <input class="form-input" type="email" id="email" name="email" placeholder="admin@nureallhi.dev" required autocomplete="email" data-od-id="login-email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="pass">Password <span class="req">*</span></label>
+        <input class="form-input" type="password" id="pass" name="pass" placeholder="Enter password" required autocomplete="current-password" data-od-id="login-pass">
+      </div>
+      <div id="loginError" class="form-error" style="display:none;margin-bottom:16px"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" data-od-id="login-submit">Sign In</button>
+    </form>
+
+    <p class="login-footer">Hidden access — no public link</p>
+  </div>
+</main>
+
+<script src="admin-auth.js"></script>
+<script>
+(function () {
+  if (AdminAuth.isLoggedIn()) { location.href = 'index.html'; return; }
+  var form = document.getElementById('loginForm');
+  var errEl = document.getElementById('loginError');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('email').value.trim();
+    var pass = document.getElementById('pass').value;
+    errEl.style.display = 'none';
+    document.getElementById('email').classList.remove('error');
+    document.getElementById('pass').classList.remove('error');
+    if (!email || !pass) {
+      errEl.textContent = 'Both fields are required.';
+      errEl.style.display = 'block';
+      if (!email) document.getElementById('email').classList.add('error');
+      if (!pass) document.getElementById('pass').classList.add('error');
+      return;
+    }
+    if (AdminAuth.login(email, pass)) {
+      location.href = 'index.html';
+    } else {
+      errEl.textContent = 'Invalid credentials — try again.';
+      errEl.style.display = 'block';
+      document.getElementById('pass').classList.add('error');
+      document.getElementById('pass').value = '';
+      document.getElementById('pass').focus();
+    }
+  });
+})();
+</script>
+</body>
+</html>

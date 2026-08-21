@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projects — Nur E Allhi Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div id="toasts" class="toast-wrap"></div>
+
+<div class="admin-wrap">
+  <aside class="sidebar" id="sidebar" aria-label="Admin navigation">
+    <div class="sidebar-brand"><span class="ba">~/</span>nur-e-allhi <span style="opacity:.4">· admin</span></div>
+    <nav class="sidebar-nav">
+      <a href="index.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a href="projects.html" class="active"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Projects</a>
+      <a href="education.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 6 3 6 3s3 0 6-3v-5"/></svg>Education</a>
+      <a href="blog.html"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Blog</a>
+    </nav>
+    <div class="sidebar-footer"><button onclick="AdminAuth.logout()" style="background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:0">Logout</button></div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <h1>Projects</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary btn-sm" onclick="openModal()" data-od-id="add-project-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Project
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content" id="main-content">
+      <div class="panel" data-od-id="projects-table">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Stack</th>
+                <th>Status</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="projectRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="projectModal" data-od-id="project-modal">
+  <div class="modal" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h2 id="modalTitle">Add Project</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    </div>
+    <form id="projectForm" novalidate>
+      <input type="hidden" id="editIdx" value="-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="pTitle">Title <span class="req">*</span></label>
+          <input class="form-input" id="pTitle" placeholder="MoneyFlows" required data-od-id="project-title">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pNum">Number</label>
+          <input class="form-input" id="pNum" placeholder="/01" style="font-family:var(--font-mono)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="pDesc">Description <span class="req">*</span></label>
+        <textarea class="form-textarea" id="pDesc" rows="3" placeholder="Family finance dashboard — shared accounts, stacked loans..." required data-od-id="project-desc"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stack</label>
+        <div class="tag-wrap" id="stackTags" data-od-id="project-stack">
+          <input type="text" id="stackInput" placeholder="Type + Enter to add">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="pRepo">Repo URL</label>
+          <input class="form-input" id="pRepo" placeholder="https://github.com/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pLive">Live URL</label>
+          <input class="form-input" id="pLive" placeholder="https://...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="pStatus">Status</label>
+        <select class="form-select" id="pStatus">
+          <option value="completed">Completed</option>
+          <option value="in development">In Development</option>
+        </select>
+      </div>
+      <div id="projectError" class="form-error" style="display:none"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" id="deleteBtn" style="display:none;margin-right:auto" onclick="deleteProject()">Delete</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="admin-auth.js"></script>
+<script src="admin-nav.js"></script>
+<script>
+(function () {
+  if (!AdminAuth.guard()) return;
+  AdminNav.init();
+
+  var STACK_DEFAULT = ['React','TypeScript','Tailwind'];
+  var DATA_KEY = 'admin_projects';
+  var defaults = [
+    { title:'MoneyFlows', num:'/01', desc:'Family finance dashboard — shared accounts, stacked loans and member-by-member spending in one dark, fast panel.', stack:['React','TypeScript','Tailwind'], repo:'#', live:'#', status:'completed' },
+    { title:'YardFlow', num:'/02', desc:'A workflow companion app — the second release in the product line, sharing the MoneyFlows design system.', stack:['React','Node.js','SQLite'], repo:'#', live:'', status:'in development' },
+    { title:'EN IPTV Player', num:'/03', desc:'Live IPTV player for Samsung Tizen TV — a remote-first 10-foot UI with a channel sidebar and glass playback controls.', stack:['Tizen','JavaScript','HLS'], repo:'#', live:'', status:'completed' }
+  ];
+
+  function getData() {
+    try { var d = JSON.parse(localStorage.getItem(DATA_KEY)); return Array.isArray(d) && d.length ? d : defaults; }
+    catch(e) { return defaults; }
+  }
+  function saveData(d) { localStorage.setItem(DATA_KEY, JSON.stringify(d)); }
+  var data = getData();
+
+  var tbody = document.getElementById('projectRows');
+  function render() {
+    tbody.innerHTML = data.map(function (p, i) {
+      var chips = (p.stack||[]).map(function(s){ return '<span class="chip">'+s+'</span>'; }).join(' ');
+      var badge = p.status === 'completed'
+        ? '<span class="badge badge-success">Completed</span>'
+        : '<span class="badge badge-accent">In Development</span>';
+      return '<tr><td style="font-family:var(--font-mono);font-size:12px;color:var(--muted)">'+(p.num||'/'+String(i+1).padStart(2,'0'))+'</td>'
+        + '<td style="font-weight:500">'+p.title+'</td>'
+        + '<td><div style="display:flex;flex-wrap:wrap;gap:4px">'+chips+'</div></td>'
+        + '<td>'+badge+'</td>'
+        + '<td><div class="table-actions" style="justify-content:flex-end">'
+        + '<button class="act-edit" onclick="editProject('+i+')">Edit</button>'
+        + '<button class="act-delete" onclick="removeProject('+i+')">Delete</button>'
+        + '</div></td></tr>';
+    }).join('');
+  }
+  render();
+
+  /* tag input */
+  var tags = [];
+  var tagWrap = document.getElementById('stackTags');
+  var tagInput = document.getElementById('stackInput');
+  function renderTags() {
+    tagWrap.querySelectorAll('.chip').forEach(function(c){c.remove()});
+    tags.forEach(function(t,i){
+      var chip = document.createElement('span'); chip.className='chip';
+      chip.innerHTML = t+' <button type="button" onclick="removeTag('+i+')">&times;</button>';
+      tagWrap.insertBefore(chip, tagInput);
+    });
+  }
+  window.removeTag = function(i){ tags.splice(i,1); renderTags(); };
+  tagInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){e.preventDefault();var v=tagInput.value.trim();if(v&&tags.indexOf(v)===-1){tags.push(v);renderTags();}tagInput.value='';}
+    if(e.key==='Backspace'&&!tagInput.value&&tags.length){tags.pop();renderTags();}
+  });
+  tagWrap.addEventListener('click',function(){tagInput.focus()});
+
+  /* modal */
+  var modal = document.getElementById('projectModal');
+  window.openModal = function(idx) {
+    document.getElementById('editIdx').value = idx !== undefined ? idx : -1;
+    document.getElementById('modalTitle').textContent = idx !== undefined ? 'Edit Project' : 'Add Project';
+    document.getElementById('deleteBtn').style.display = idx !== undefined ? '' : 'none';
+    var err = document.getElementById('projectError'); err.style.display='none';
+    if (idx !== undefined) {
+      var p = data[idx];
+      document.getElementById('pTitle').value = p.title;
+      document.getElementById('pNum').value = p.num || '';
+      document.getElementById('pDesc').value = p.desc;
+      document.getElementById('pRepo').value = p.repo === '#' ? '' : (p.repo||'');
+      document.getElementById('pLive').value = p.live === '#' ? '' : (p.live||'');
+      document.getElementById('pStatus').value = p.status;
+      tags = (p.stack||[]).slice();
+    } else {
+      document.getElementById('projectForm').reset();
+      tags = STACK_DEFAULT.slice();
+    }
+    renderTags();
+    modal.classList.add('open');
+    document.getElementById('pTitle').focus();
+  };
+  window.closeModal = function(){ modal.classList.remove('open'); };
+  modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
+  window.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))closeModal()});
+
+  window.editProject = function(i){ openModal(i); };
+  window.removeProject = function(i){
+    if(!confirm('Delete "'+data[i].title+'" — are you sure?'))return;
+    data.splice(i,1); saveData(data); render();
+    AdminNav.toast('Project deleted','error');
+  };
+  window.deleteProject = function(){
+    var idx = parseInt(document.getElementById('editIdx').value);
+    if(idx>=0) removeProject(idx);
+  };
+
+  document.getElementById('projectForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var title = document.getElementById('pTitle').value.trim();
+    var desc = document.getElementById('pDesc').value.trim();
+    var err = document.getElementById('projectError');
+    err.style.display='none';
+    document.getElementById('pTitle').classList.remove('error');
+    document.getElementById('pDesc').classList.remove('error');
+    if(!title||!desc){
+      err.textContent='Title and Description are required.';
+      err.style.display='block';
+      if(!title)document.getElementById('pTitle').classList.add('error');
+      if(!desc)document.getElementById('pDesc').classList.add('error');
+      return;
+    }
+    var obj = {
+      title:title,
+      num:document.getElementById('pNum').value.trim(),
+      desc:desc,
+      stack:tags.slice(),
+      repo:document.getElementById('pRepo').value.trim()||'#',
+      live:document.getElementById('pLive').value.trim()||'',
+      status:document.getElementById('pStatus').value
+    };
+    var idx = parseInt(document.getElementById('editIdx').value);
+    if(idx>=0){ data[idx]=obj; AdminNav.toast('Project updated'); }
+    else { data.push(obj); AdminNav.toast('Project added'); }
+    saveData(data); render(); closeModal();
+  });
+
+  /* hash-based deep link */
+  if(location.hash==='#new') openModal();
+})();
+</script>
+</body>
+</html>

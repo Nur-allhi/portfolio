@@ -8,12 +8,12 @@ This is a **static site with no backend**. Security surface is minimal.
 2. **Dependency vulnerabilities** — npm packages with known CVEs
 3. **Secrets in source code** — API keys, tokens accidentally committed
 4. **Open redirect** — External links without validation
+5. **Admin bypass** — direct access to `/admin/*` without login (MVP uses localStorage)
+6. **XSS via admin markdown** — blog content rendered as HTML
 
-### Out-of-Scope
-- Authentication/authorization (no user system)
-- Data encryption (no sensitive data stored)
-- Rate limiting (no API endpoints)
-- CSRF protection (no forms with state-changing operations)
+### Out-of-Scope (v1)
+- Rate limiting (no API)
+- Data encryption (static site, localStorage only)
 
 ---
 
@@ -84,9 +84,25 @@ fi
 **Risk:** XSS via dangerouslySetInnerHTML or unsanitized content.
 
 **Control:**
-- Never use `dangerouslySetInnerHTML`
-- All content is hardcoded in TypeScript data files
-- No user-generated content in v1
+- Public: never use `dangerouslySetInnerHTML`; all content is hardcoded in `src/data/*`
+- Admin blog preview: sanitize markdown → HTML (escape `< >`, allow only `# ## ###`, `**`, `*`, `` ` ``, `
+
+`); never inject raw HTML
+
+### 6. Admin Auth (MVP)
+
+**Risk:** localStorage auth is trivially bypassable.
+
+**Control (current, `DESIGNS/admin/admin-auth.js:2`):**
+- Hardcoded `admin@nureallhi.dev / admin123`, `localStorage.admin_auth === '1'`, `guard()` redirects to login, hidden URL (no public link)
+- Acceptable for MVP because site is static and data is local-only
+
+**Next step (when backend exists):**
+- Replace with JWT + httpOnly cookie, bcrypt hash, env `ADMIN_EMAIL`/`ADMIN_PASSWORD_HASH`
+
+### 7. Admin Input Validation
+
+**Control:** Require Title/Desc in modals (`admin/projects.html:221`), escape output when rendering tables, use `rel="noopener noreferrer"` for external links.
 
 ### 5. External Link Safety
 
@@ -110,16 +126,13 @@ fi
 
 ## Access Control
 
-### No Authentication Required
-- All content is public by design
-- No admin panel in v1
-- No user roles or permissions
+### Public: No Auth
+- All portfolio content is public.
 
-### Future Considerations (v2+)
-If blog with admin is added:
-- Implement JWT-based auth
-- Role-based access (admin vs visitor)
-- Rate limiting on login attempts
+### Admin: Hidden + Guarded
+- Routes `/admin/*` are URL-only, no link from public site (`AGENTS.md:1`)
+- `AdminGuard` checks `localStorage.admin_auth === '1'` → else redirect `/admin/login`
+- Single admin user (no roles). Logout clears storage.
 
 ---
 
@@ -128,9 +141,11 @@ If blog with admin is added:
 ### What We Store
 | Data | Location | Sensitivity |
 |------|----------|-------------|
-| Project metadata | `src/data/projects.ts` | Public |
-| Academic entries | `src/data/academics.ts` | Public |
-| Course info | `src/data/courses.ts` | Public |
+| Project metadata | `src/data/projects.ts` + `localStorage admin_projects` | Public |
+| Academic entries | `src/data/academics.ts` + `admin_academics` | Public |
+| Course info | `src/data/courses.ts` + `admin_courses` | Public |
+| Blog posts | `localStorage admin_blog` | Public (published) |
+| Admin auth flag | `localStorage admin_auth` | Sensitive (MVP) |
 | Email address | `src/components/sections/Contact.tsx` | Public |
 
 ### What We Never Store
@@ -147,9 +162,10 @@ If blog with admin is added:
 - [ ] `npm audit` passes with 0 vulnerabilities
 - [ ] No `.env` files in git history
 - [ ] All external links have `rel="noopener noreferrer"`
-- [ ] No `dangerouslySetInnerHTML` usage
-- [ ] No hardcoded secrets in source
-- [ ] `.gitignore` covers all sensitive files
+- [ ] No `dangerouslySetInnerHTML` (blog preview is sanitized)
+- [ ] No hardcoded secrets (admin creds are MVP-only, documented)
+- [ ] `.gitignore` covers env/build/deps; `admin_auth` is localStorage only
+- [ ] Admin routes guarded, no public link to `/admin`
 - [ ] Build output has no source maps in production
 
 ---

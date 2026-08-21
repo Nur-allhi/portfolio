@@ -217,6 +217,57 @@ Renders: anchor tag with appropriate styling
 | `/` | Portfolio | Portfolio |
 | `/blog` | Blog | Blog |
 | `/#contact` | Portfolio (scroll) | Contact |
+| `/admin/login` | Admin Login | — (hidden) |
+| `/admin` | Admin Dashboard | — (hidden, guarded) |
+| `/admin/projects` | Admin Projects | — |
+| `/admin/education` | Admin Education | — |
+| `/admin/blog` | Admin Blog | — |
+
+> Admin routes are URL-only. No link from public site. Guard redirects to `/admin/login` if `localStorage.admin_auth !== '1'`.
+
+---
+
+## Admin Panel Spec (from `DESIGNS/admin/`)
+
+### Design Tokens (extends public)
+| Token | Value |
+|-------|-------|
+| `--danger` | `#EF4444` |
+| `--danger-soft` | `rgba(239,68,68,.10)` |
+| `--sidebar-w` | `240px` |
+| `--rad-sm` | `10px` |
+
+### Admin Layout (`AdminLayout.tsx` + `admin.css:16`)
+- Flex `admin-wrap`, fixed `sidebar` 240px, `admin-main` with `margin-left: var(--sidebar-w)`
+- Sidebar: brand `~/nur-e-allhi · admin`, nav links mono 13px uppercase, active = teal left border + `rgba(79,209,197,.06)` bg
+- Topbar: sticky 64px, `rgba(11,17,32,.82)` + blur, title + actions
+- Mobile <820px: sidebar `translateX(-102%)` → `.open`, burger + overlay, focus trap
+
+### Login (`Login.tsx` ← `admin/login.html:12`)
+- Centered card `min(400px,92vw)`, lock icon, email `admin@nureallhi.dev` + password `admin123`
+- Validation: required fields, `.error` red border, `form-error` text
+- Success → `localStorage.admin_auth='1'` → redirect `/admin`
+
+### Dashboard (`Dashboard.tsx` ← `admin/index.html:58`)
+- Stat grid 4 cols → 2 cols <900px → 1 col <480px, stat-card with icon + 34px num + mono label
+- Panels: Recent Activity (3 rows), Quick Actions (Add Project/Blog, Manage Education, View Public Site)
+
+### Projects Admin (`Projects.tsx` ← `admin/projects.html:44`)
+- Table: # mono muted, Title, Stack chips, Status badge (success/accent), Actions (Edit teal / Delete red)
+- Modal: Title*, Number `/01`, Desc* textarea, tag-wrap Stack input, Repo/Live URL, Status select, Save/Cancel/Delete, localStorage `admin_projects`
+
+### Education Admin (`Education.tsx` ← `admin/education.html:44`)
+- Tabs: Academics | Professional Courses (`tab-bar` active teal border)
+- Tables: Academics (Title, Subtitle, Year, Status, Institution), Courses (Title, Provider, Year, Status)
+- Modal toggles `acadFields` vs `courseFields`, keys `admin_academics` / `admin_courses`
+
+### Blog Admin (`Blog.tsx` ← `admin/blog.html:56`)
+- Empty state: `empty-state` + terminal `git log` widget
+- Table: Title, Status (Published/Draft), Date mono, Actions
+- Modal: Title* (auto-slug), Slug mono, Excerpt, Markdown textarea + Preview toggle, Status, Cover URL, key `admin_blog`
+
+### Shared Admin UI
+- Panels (`panel`), tables (`table-wrap`), badges (success/accent/muted), chips, forms (`form-input/select/textarea` surface-2), tag-wrap, modals (`modal-overlay` blur), toasts (`toast-wrap` top-right)
 
 ---
 

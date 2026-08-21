@@ -250,6 +250,66 @@
 
 ---
 
+## Phase 8: Admin Panel (Hidden, URL-only) — from `DESIGNS/admin/`
+
+### TICKET-031: Admin Auth Hook + Guard
+- **Skill:** `senior-frontend` + `senior-backend`
+- **Priority:** P0
+- **Files:** `src/hooks/useAdminAuth.ts`, `src/components/admin/AdminGuard.tsx`
+- **Estimate:** 1h
+- **Acceptance:** `admin@nureallhi.dev / admin123`, `localStorage.admin_auth`, guard redirects to `/admin/login`
+
+### TICKET-032: Admin Layout
+- **Skill:** `ui-ux-pro-max` + `senior-frontend`
+- **Priority:** P0
+- **Files:** `src/components/admin/AdminLayout.tsx`, `src/components/admin/AdminLayout.css` (from `admin.css`)
+- **Estimate:** 2h
+- **Acceptance:** Sidebar 240px, topbar sticky 64px, drawer <820px + overlay + focus trap
+
+### TICKET-033: Admin Login Page
+- **Skill:** `ui-ux-pro-max`
+- **Priority:** P0
+- **Files:** `src/pages/admin/Login.tsx`
+- **Estimate:** 1h
+- **Acceptance:** Centered 400px card, lock icon, email/pass validation, error states, redirect
+
+### TICKET-034: Admin Dashboard
+- **Skill:** `ui-ux-pro-max`
+- **Priority:** P1
+- **Files:** `src/pages/admin/Dashboard.tsx`
+- **Estimate:** 1h
+- **Acceptance:** Stat grid 4 → 2 → 1 cols, activity list, quick actions
+
+### TICKET-035: Admin Projects CRUD
+- **Skill:** `senior-frontend` + `ui-ux-pro-max`
+- **Priority:** P0
+- **Files:** `src/pages/admin/Projects.tsx`
+- **Estimate:** 2.5h
+- **Acceptance:** Table + modal (Title*, Number, Desc*, tag-wrap Stack, Repo/Live, Status), `admin_projects` localStorage, toasts
+
+### TICKET-036: Admin Education CRUD
+- **Skill:** `senior-frontend` + `ui-ux-pro-max`
+- **Priority:** P0
+- **Files:** `src/pages/admin/Education.tsx`
+- **Estimate:** 2.5h
+- **Acceptance:** Tabs Academics/Courses, tables + modal toggle, `admin_academics`/`admin_courses`
+
+### TICKET-037: Admin Blog CRUD
+- **Skill:** `senior-frontend` + `ui-ux-pro-max`
+- **Priority:** P0
+- **Files:** `src/pages/admin/Blog.tsx`
+- **Estimate:** 2.5h
+- **Acceptance:** Empty terminal state, table, modal (Title→slug, Markdown + Preview, Status, Cover), `admin_blog`
+
+### TICKET-038: Admin Routing + Build Verify
+- **Skill:** `senior-frontend`
+- **Priority:** P0
+- **Files:** `src/App.tsx`
+- **Estimate:** 1h
+- **Acceptance:** `/admin/*` guarded, no public link, `npm run build` passes, manual login→CRUD→logout tested
+
+---
+
 ## Ticket Summary
 
 | Phase | Tickets | Total Estimate |
@@ -261,4 +321,5 @@
 | Phase 5: Sections | 6 | 9h |
 | Phase 6: Pages | 3 | 3h |
 | Phase 7: Polish | 6 | 6.5h |
-| **Total** | **30** | **~31h** |
+| Phase 8: Admin | 8 | 13.5h |
+| **Total** | **38** | **~44.5h** |

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — Nur E Allhi Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div id="toasts" class="toast-wrap"></div>
+
+<div class="admin-wrap">
+  <aside class="sidebar" id="sidebar" aria-label="Admin navigation">
+    <div class="sidebar-brand"><span class="ba">~/</span>nur-e-allhi <span style="opacity:.4">· admin</span></div>
+    <nav class="sidebar-nav" data-od-id="sidebar-nav">
+      <a href="index.html" class="active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="projects.html" data-page="projects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Projects
+      </a>
+      <a href="education.html" data-page="education">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 6 3 6 3s3 0 6-3v-5"/></svg>
+        Education
+      </a>
+      <a href="blog.html" data-page="blog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        Blog
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button onclick="AdminAuth.logout()" style="background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--muted)'">Logout</button>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" data-od-id="admin-burger">
+          <span></span><span></span><span></span>
+        </button>
+        <h1 data-od-id="page-title">Dashboard</h1>
+      </div>
+      <div class="topbar-actions">
+        <span style="font-family:var(--font-mono);font-size:12px;color:var(--muted)" id="dashDate"></span>
+      </div>
+    </div>
+
+    <div class="admin-content" id="main-content">
+      <div class="stat-grid" data-od-id="stat-grid">
+        <div class="stat-card" data-od-id="stat-projects">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="stat-num">3</div>
+          <div class="stat-label">Total Projects</div>
+        </div>
+        <div class="stat-card" data-od-id="stat-education">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 6 3 6 3s3 0 6-3v-5"/></svg></div>
+          <div class="stat-num">3</div>
+          <div class="stat-label">Education Entries</div>
+        </div>
+        <div class="stat-card" data-od-id="stat-courses">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
+          <div class="stat-num">2</div>
+          <div class="stat-label">Courses</div>
+        </div>
+        <div class="stat-card" data-od-id="stat-blog">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+          <div class="stat-num">0</div>
+          <div class="stat-label">Blog Posts</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="panel" data-od-id="activity-panel">
+          <div class="panel-header"><h3>Recent Activity</h3></div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-soft)">
+              <div>
+                <div style="font-size:14px">Edited <strong>Projects</strong></div>
+                <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:2px">Updated MoneyFlows description</div>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap">2 hours ago</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-soft)">
+              <div>
+                <div style="font-size:14px">Added <strong>YardFlow</strong></div>
+                <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:2px">New project card created</div>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap">1 day ago</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+              <div>
+                <div style="font-size:14px">Edited <strong>Education</strong></div>
+                <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:2px">Updated MBA status to In Progress</div>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);white-space:nowrap">3 days ago</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" data-od-id="quick-actions">
+          <div class="panel-header"><h3>Quick Actions</h3></div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <a href="projects.html#new" class="btn btn-ghost" style="justify-content:flex-start">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Project
+            </a>
+            <a href="blog.html#new" class="btn btn-ghost" style="justify-content:flex-start">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Blog Post
+            </a>
+            <a href="education.html" class="btn btn-ghost" style="justify-content:flex-start">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Manage Education
+            </a>
+            <a href="../index.html" class="btn btn-ghost" style="justify-content:flex-start" target="_blank">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              View Public Site
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="admin-auth.js"></script>
+<script src="admin-nav.js"></script>
+<script>
+(function () {
+  if (!AdminAuth.guard()) return;
+  AdminNav.init();
+
+  var d = new Date();
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('dashDate').textContent = months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+})();
+</script>
+</body>
+</html>
