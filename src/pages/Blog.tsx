@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import "./Blog.css";
 
@@ -7,8 +7,11 @@ type Post = { id: string; title: string; slug: string; excerpt: string; date: st
 export function Blog() {
   const [posts, setPosts] = useState<Post[]>([]);
   useEffect(() => {
-    const q = query(collection(db, "blog"), where("status", "==", "published"), orderBy("order", "asc"));
-    const unsub = onSnapshot(q, (snap) => setPosts(snap.docs.map(d => ({ ...(d.data() as Post), id: d.id }))), () => {});
+    const q = query(collection(db, "blog"), orderBy("order", "asc"));
+    const unsub = onSnapshot(q, (snap) => {
+      const all = snap.docs.map(d => ({ ...(d.data() as Post), id: d.id, ...(d.data() as { status?: string }) }));
+      setPosts(all.filter((p: Post & { status?: string }) => (p.status || "published") === "published"));
+    }, (e) => { console.error("Blog onSnapshot:", e); });
     return () => unsub();
   }, []);
   if (posts.length) {

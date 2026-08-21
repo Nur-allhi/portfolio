@@ -48,13 +48,13 @@ export function AdminEducation() {
         if (!eTitle.trim()) { setErr("Title is required."); return; }
         const obj = { title: eTitle.trim(), sub: eSub.trim(), year: eYear.trim(), status: eStatus, inst: eInst.trim(), order: idx >= 0 ? acad[idx].order : acad.length };
         if (idx >= 0 && acad[idx].id) await updateDoc(doc(db, ACAD_COL, acad[idx].id!), obj);
-        else if (idx >= 0) { const n = [...acad]; n[idx] = { ...obj } as Acad; setAcad(n); } else await addDoc(collection(db, ACAD_COL), obj);
+        else await addDoc(collection(db, ACAD_COL), obj);
         toast(idx >= 0 ? "Entry updated" : "Entry added");
       } else {
         if (!cTitle.trim()) { setErr("Title is required."); return; }
         const obj = { title: cTitle.trim(), provider: cProv.trim(), year: cYear.trim(), status: cStatus, desc: cDesc.trim(), order: idx >= 0 ? courses[idx].order : courses.length };
         if (idx >= 0 && courses[idx].id) await updateDoc(doc(db, COURSE_COL, courses[idx].id!), obj);
-        else if (idx >= 0) { const n = [...courses]; n[idx] = { ...obj } as Course; setCourses(n); } else await addDoc(collection(db, COURSE_COL), obj);
+        else await addDoc(collection(db, COURSE_COL), obj);
         toast(idx >= 0 ? "Entry updated" : "Entry added");
       }
       setOpen(false);
