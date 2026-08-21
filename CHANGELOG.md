@@ -14,3 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - README: update tech stack to React 19 / Vite 8 / Tailwind 4
+
+### Added (Admin)
+- Hidden admin panel at `/admin/*` (no public link) with localStorage auth (`admin@nureallhi.dev / admin123`)
+- Admin CRUD: Projects, Education (Academics/Courses tabs), Blog (markdown + preview) — exact match to DESIGNS/admin/*

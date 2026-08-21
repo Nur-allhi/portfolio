@@ -1,22 +1,46 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
 import { Portfolio } from "./pages/Portfolio";
 import { Blog } from "./pages/Blog";
+import { Login } from "./pages/admin/Login";
+import { Dashboard } from "./pages/admin/Dashboard";
+import { AdminProjects } from "./pages/admin/Projects";
+import { AdminEducation } from "./pages/admin/Education";
+import { BlogAdmin } from "./pages/admin/BlogAdmin";
+import { AdminLayout } from "./components/admin/AdminLayout";
+import { AdminGuard } from "./components/admin/AdminGuard";
+
+function PublicLayout() {
+  return (
+    <>
+      <Navbar />
+      <div style={{ minHeight: "100svh", display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1 }}><Outlet /></div>
+        <Footer />
+      </div>
+    </>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <div style={{ minHeight: "100svh", display: "flex", flexDirection: "column" }}>
-        <div style={{ flex: 1 }}>
-          <Routes>
-            <Route path="/" element={<Portfolio />} />
-            <Route path="/blog" element={<Blog />} />
-          </Routes>
-        </div>
-        <Footer />
-      </div>
+      <Routes>
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Portfolio />} />
+          <Route path="/blog" element={<Blog />} />
+        </Route>
+        <Route path="/admin/login" element={<Login />} />
+        <Route element={<AdminGuard />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<Dashboard />} />
+            <Route path="/admin/projects" element={<AdminProjects />} />
+            <Route path="/admin/education" element={<AdminEducation />} />
+            <Route path="/admin/blog" element={<BlogAdmin />} />
+          </Route>
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
