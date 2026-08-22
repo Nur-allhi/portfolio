@@ -33,6 +33,8 @@ export function Navbar() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  const close = () => setOpen(false);
+
   return (
     <>
       <header className={`site-nav ${scrolled ? "scrolled" : ""}`}>
@@ -40,20 +42,29 @@ export function Navbar() {
           <Link className="brand" to="/"><span className="brand-tilde">~/</span>nur-e-allhi</Link>
           <ul className="nav-links">
             <li><Link to="/" className={isHome ? "is-active" : ""}>Portfolio</Link></li>
-            <li><Link to="/blog" className={location.pathname === "/blog" ? "is-active" : ""}>Blog</Link></li>
+            <li><Link to="/blog" className={location.pathname.startsWith("/blog") ? "is-active" : ""}>Blog</Link></li>
             <li><a href={isHome ? "#contact" : "/#contact"}>Contact</a></li>
           </ul>
-          <button className={`burger ${open ? "x" : ""}`} aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(!open)}>
+          <button className={`burger ${open ? "x" : ""}`} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen(!open)}>
             <span /><span /><span />
           </button>
         </div>
       </header>
-      <div className={`overlay ${open ? "show" : ""}`} onClick={() => setOpen(false)} />
+      <div className={`overlay ${open ? "show" : ""}`} onClick={close} />
       <nav className={`drawer ${open ? "open" : ""}`} aria-label="Mobile menu">
-        <span className="drawer-brand">~/nur-e-allhi — menu</span>
-        <Link to="/" onClick={() => setOpen(false)}>Portfolio</Link>
-        <Link to="/blog" onClick={() => setOpen(false)}>Blog</Link>
-        <a href={isHome ? "#contact" : "/#contact"} onClick={() => setOpen(false)}>Contact</a>
+        <div className="drawer-header">
+          <span className="drawer-brand">~/nur-e-allhi — menu</span>
+          <button className="drawer-close" aria-label="Close menu" onClick={close}>×</button>
+        </div>
+        <div className="drawer-links">
+          <Link to="/" onClick={close} className={isHome && location.pathname === "/" ? "active" : ""}><span className="dl-num">01</span> Portfolio</Link>
+          <Link to="/blog" onClick={close} className={location.pathname.startsWith("/blog") ? "active" : ""}><span className="dl-num">02</span> Blog</Link>
+          <a href={isHome ? "#contact" : "/#contact"} onClick={close}><span className="dl-num">03</span> Contact</a>
+        </div>
+        <div className="drawer-footer">
+          <p>nureallhi1@gmail.com</p>
+          <span>Available for junior roles · BD / Remote</span>
+        </div>
       </nav>
     </>
   );

@@ -7,17 +7,22 @@ import { ScrollReveal } from "../ui/ScrollReveal";
 import "./Academics.css";
 
 export function Academics() {
-  const [rows, setRows] = useState(fallback);
+  const [rows, setRows] = useState<typeof fallback | null>(null);
   useEffect(() => {
     const q = query(collection(db, "academics"), orderBy("order", "asc"));
     const unsub = onSnapshot(q, (snap) => {
-      if (!snap.empty) setRows(snap.docs.map(d => {
+      if (snap.empty) setRows([]);
+      else setRows(snap.docs.map(d => {
         const v = d.data() as { title: string; sub: string; year: string; status: string; inst: string };
         return { id: d.id, title: v.title, subtitle: v.sub, year: v.year, status: v.status as "completed"|"in-progress", institution: v.inst };
       }));
-    });
+    }, () => setRows([]));
     return () => unsub();
   }, []);
+  if (rows === null) return (
+    <section id="academics" className="section"><div className="wrap"><div className="sec-head"><span className="kicker">04 · academics</span><h2>Education path</h2></div><div className="timeline"><div className="tl-item" style={{ opacity: .4 }}><div style={{ height: 12, background: "var(--border)", borderRadius: 6, width: 120 }} /></div></div></div></section>
+  );
+  if (rows.length === 0) return null;
   return (
     <section id="academics" className="section">
       <div className="wrap">

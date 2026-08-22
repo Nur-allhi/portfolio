@@ -1,10 +1,9 @@
 import "./Footer.css";
 
-export function Footer({ backTo }: { backTo?: string }) {
+export function Footer() {
   return (
     <footer className="site-footer">
-      <span>© 2026 Nur E Allhi — built with React, TypeScript & Vite</span>
-      <a href={backTo ?? "#home"}>{backTo ? "portfolio ↑" : "back to top ↑"}</a>
+      <span>© 2026 Nur E Allhi. All rights reserved.</span>
     </footer>
   );
 }

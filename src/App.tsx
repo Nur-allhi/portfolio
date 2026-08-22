@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
+import { BackToTop } from "./components/ui/BackToTop";
 import { Portfolio } from "./pages/Portfolio";
 import { Blog } from "./pages/Blog";
 import { BlogPost } from "./pages/BlogPost";
@@ -9,6 +10,7 @@ import { Dashboard } from "./pages/admin/Dashboard";
 import { AdminProjects } from "./pages/admin/Projects";
 import { AdminEducation } from "./pages/admin/Education";
 import { BlogAdmin } from "./pages/admin/BlogAdmin";
+import { AdminSocials } from "./pages/admin/Socials";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { AdminGuard } from "./components/admin/AdminGuard";
 
@@ -20,6 +22,7 @@ function PublicLayout() {
         <div style={{ flex: 1 }}><Outlet /></div>
         <Footer />
       </div>
+      <BackToTop />
     </>
   );
 }
@@ -40,6 +43,7 @@ export default function App() {
             <Route path="/admin/projects" element={<AdminProjects />} />
             <Route path="/admin/education" element={<AdminEducation />} />
             <Route path="/admin/blog" element={<BlogAdmin />} />
+            <Route path="/admin/socials" element={<AdminSocials />} />
           </Route>
         </Route>
       </Routes>
