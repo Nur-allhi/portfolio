@@ -43,15 +43,15 @@
 .burger.x span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--accent); }
 .burger.x span:nth-child(2) { opacity: 0; }
 .burger.x span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--accent); }
-.overlay { position: fixed; inset: 0; z-index: 55; background: rgba(5,9,18,.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity .35s var(--ease); }
+.overlay { position: fixed; inset: 0; z-index: 55; background: rgba(5,9,18,.38); backdrop-filter: blur(6px) saturate(140%); -webkit-backdrop-filter: blur(6px) saturate(140%); opacity: 0; pointer-events: none; transition: opacity .35s var(--ease); }
 .overlay.show { opacity: 1; pointer-events: auto; }
 .drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
-  width: min(340px, 84vw); background: rgba(18,26,43,.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-left: 1px solid rgba(226,232,244,.08); 
+  width: min(340px, 84vw); background: rgba(18,26,43,.38); backdrop-filter: blur(28px) saturate(180%); -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-left: 1px solid rgba(255,255,255,.10); 
   padding: 28px 28px 32px; display: flex; flex-direction: column;
   transform: translateX(102%); transition: transform .4s cubic-bezier(.22,.61,.36,1);
-  box-shadow: -24px 0 64px rgba(0,0,0,.45);
+  box-shadow: -24px 0 64px rgba(0,0,0,.38), inset 1px 0 0 rgba(255,255,255,.04);
 }
 .drawer.open { transform: none; }
 .drawer-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid rgba(226,232,244,.08); margin-bottom: 8px; }
