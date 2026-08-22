@@ -14,14 +14,22 @@ function Icon({ p }: { p: string }) {
 }
 
 export function SocialIcons() {
-  const [rows, setRows] = useState<SocialLink[]>(defaultSocials);
+  const [rows, setRows] = useState<SocialLink[] | null>(null);
   useEffect(() => {
     const q = query(collection(db, "socials"), orderBy("order", "asc"));
     const unsub = onSnapshot(q, (snap) => {
-      if (!snap.empty) setRows(snap.docs.map(d => ({ id: d.id, ...(d.data() as SocialLink) })).filter(r => r.url && r.url !== "#"));
-    });
+      if (snap.empty) setRows(defaultSocials.filter(r => r.url && r.url !== "#"));
+      else setRows(snap.docs.map(d => ({ id: d.id, ...(d.data() as SocialLink) })).filter(r => r.url && r.url !== "#"));
+    }, () => setRows(defaultSocials.filter(r => r.url && r.url !== "#")));
     return () => unsub();
   }, []);
+  if (rows === null) {
+    return (
+      <div className="socials" aria-hidden="true">
+        {[0, 1, 2, 3].map(i => <span key={i} className="soc soc-skeleton" />)}
+      </div>
+    );
+  }
   if (!rows.length) return null;
   return (
     <div className="socials">
