@@ -31,6 +31,7 @@ export function AdminLayout() {
           <NavLink to="/admin/projects" className={({ isActive }) => isActive ? "active" : ""}>Projects</NavLink>
           <NavLink to="/admin/education" className={({ isActive }) => isActive ? "active" : ""}>Education</NavLink>
           <NavLink to="/admin/blog" className={({ isActive }) => isActive ? "active" : ""}>Blog</NavLink>
+          <NavLink to="/admin/socials" className={({ isActive }) => isActive ? "active" : ""}>Socials</NavLink>
         </nav>
         <div className="sidebar-footer"><button onClick={doLogout} className="logout-btn">Logout</button></div>
       </aside>

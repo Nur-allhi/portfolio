@@ -9,6 +9,7 @@ import { Dashboard } from "./pages/admin/Dashboard";
 import { AdminProjects } from "./pages/admin/Projects";
 import { AdminEducation } from "./pages/admin/Education";
 import { BlogAdmin } from "./pages/admin/BlogAdmin";
+import { AdminSocials } from "./pages/admin/Socials";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { AdminGuard } from "./components/admin/AdminGuard";
 
@@ -40,6 +41,7 @@ export default function App() {
             <Route path="/admin/projects" element={<AdminProjects />} />
             <Route path="/admin/education" element={<AdminEducation />} />
             <Route path="/admin/blog" element={<BlogAdmin />} />
+            <Route path="/admin/socials" element={<AdminSocials />} />
           </Route>
         </Route>
       </Routes>
