@@ -47,7 +47,7 @@
 .overlay.show { opacity: 1; pointer-events: auto; }
 .drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
-  width: min(360px, 90vw); background: rgba(18,26,43,.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  width: min(340px, 84vw); background: rgba(18,26,43,.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-left: 1px solid rgba(226,232,244,.08); 
   padding: 28px 28px 32px; display: flex; flex-direction: column;
   transform: translateX(102%); transition: transform .4s cubic-bezier(.22,.61,.36,1);
@@ -60,9 +60,9 @@
 .drawer-close:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 .drawer-links { display: flex; flex-direction: column; padding: 12px 0; flex: 1; }
 .drawer-links a {
-  font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -.02em;
-  color: var(--fg); text-decoration: none; padding: 14px 14px; border-radius: 10px;
-  display: flex; align-items: center; gap: 14px;
+  font-family: var(--font-display); font-size: clamp(17px, 4.2vw, 20px); font-weight: 600; letter-spacing: -.02em;
+  color: var(--fg); text-decoration: none; padding: 12px 12px; border-radius: 10px;
+  display: flex; align-items: center; gap: 12px;
   border: 1px solid transparent; opacity: 0; transform: translateX(12px);
   transition: background .2s, border-color .2s, color .2s, opacity .35s var(--ease), transform .35s var(--ease);
 }
@@ -77,4 +77,14 @@
 .drawer-footer { padding-top: 20px; border-top: 1px solid rgba(226,232,244,.08); font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.6; }
 .drawer-footer p { color: var(--accent); font-size: 12px; margin-bottom: 4px; }
 @media (max-width: 820px) { .nav-links { display: none; } .burger { display: flex; } }
+@media (max-width: 640px) {
+  .drawer { width: min(320px, 88vw); padding: 22px 20px 24px; }
+  .drawer-links a { font-size: 17px; padding: 11px 10px; gap: 10px; }
+  .drawer-header { padding-bottom: 16px; }
+}
+@media (max-width: 380px) {
+  .drawer { width: 92vw; }
+  .drawer-links a { font-size: 16px; padding: 10px 10px; }
+  .drawer-footer { font-size: 10px; }
+}
 @media (prefers-reduced-motion: reduce) { .drawer, .drawer-links a, .burger span, .overlay { transition: none !important; } .drawer-links a { opacity: 1; transform: none; } }
