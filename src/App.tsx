@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
+import { BackToTop } from "./components/ui/BackToTop";
 import { Portfolio } from "./pages/Portfolio";
 import { Blog } from "./pages/Blog";
 import { BlogPost } from "./pages/BlogPost";
@@ -21,6 +22,7 @@ function PublicLayout() {
         <div style={{ flex: 1 }}><Outlet /></div>
         <Footer />
       </div>
+      <BackToTop />
     </>
   );
 }
