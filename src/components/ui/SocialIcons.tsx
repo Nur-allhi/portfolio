@@ -33,8 +33,8 @@ export function SocialIcons() {
   if (!rows.length) return null;
   return (
     <div className="socials">
-      {rows.map(r => (
-        <a key={r.platform + r.url} className="soc" href={r.url} target="_blank" rel="noopener noreferrer" aria-label={r.platform}>
+      {rows.map((r, i) => (
+        <a key={r.platform + r.url} className="soc soc-enter" style={{ animationDelay: `${i * 0.08}s` }} href={r.url} target="_blank" rel="noopener noreferrer" aria-label={r.platform}>
           <Icon p={r.platform} />
         </a>
       ))}
