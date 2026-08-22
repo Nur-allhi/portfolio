@@ -39,7 +39,7 @@ export function Navbar() {
     <>
       <header className={`site-nav ${scrolled ? "scrolled" : ""}`}>
         <div className="nav-inner">
-          <Link className="brand" to="/"><span className="brand-tilde">~/</span>nur-e-allhi</Link>
+          <Link className={`brand ${open ? "brand-hidden" : ""}`} to="/"><span className="brand-tilde">~/</span>nur-e-allhi</Link>
           <ul className="nav-links">
             <li><Link to="/" className={isHome ? "is-active" : ""}>Portfolio</Link></li>
             <li><Link to="/blog" className={location.pathname.startsWith("/blog") ? "is-active" : ""}>Blog</Link></li>
